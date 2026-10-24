@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shuddh Seva Foods Sign-In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background: #ffffff;
+      color: #0f1111;
+      font-size: 13px;
+      line-height: 1.4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 14px 40px;
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 18px;
+      text-decoration: none;
+    }
+    .auth-logo-text {
+      font-size: 26px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.5px;
+    }
+    .auth-logo-text span {
+      color: #e47911;
+    }
+    .auth-logo-sub {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      color: #176b3b;
+      font-weight: 700;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 350px;
+      border: 1px solid #d5d9d9;
+      border-radius: 8px;
+      padding: 20px 26px;
+      background: #fff;
+      margin-bottom: 22px;
+    }
+    .auth-heading {
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: #0f1111;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .phone-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .country-code-pill {
+      background: #f0f2f2;
+      border: 1px solid #888c8c;
+      border-radius: 4px;
+      height: 31px;
+      padding: 0 10px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      color: #0f1111;
+    }
+    .input-text {
+      width: 100%;
+      height: 31px;
+      border: 1px solid #888c8c;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 13px;
+      outline: none;
+      box-shadow: 0 1px 2px rgba(15,17,17,.15) inset;
+      transition: all 0.2s;
+    }
+    .input-text:focus {
+      border-color: #e77600;
+      box-shadow: 0 0 3px 2px rgba(228,121,17,.5);
+    }
+    .otp-large-input {
+      height: 42px;
+      font-size: 22px;
+      letter-spacing: 8px;
+      text-align: center;
+      font-weight: 800;
+    }
+    .btn-amazon-primary {
+      width: 100%;
+      background: #ffd814;
+      border: 1px solid #fcd200;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+      color: #0f1111;
+      font-size: 13px;
+      height: 31px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      margin-top: 6px;
+    }
+    .btn-amazon-primary:hover {
+      background: #f7ca00;
+      border-color: #f2c200;
+    }
+    .disclaimer-text {
+      font-size: 11px;
+      color: #565959;
+      margin-top: 18px;
+      line-height: 1.5;
+    }
+    .disclaimer-text a {
+      color: #007185;
+      text-decoration: none;
+    }
+    .disclaimer-text a:hover {
+      text-decoration: underline;
+      color: #c7511f;
+    }
+    .divider-row {
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+      position: relative;
+      margin: 14px 0 14px;
+    }
+    .divider-row::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid #e7e7e7;
+      z-index: 1;
+    }
+    .divider-row span {
+      background: #fff;
+      padding: 0 8px;
+      position: relative;
+      z-index: 2;
+      color: #767676;
+      font-size: 12px;
+    }
+    .btn-amazon-secondary {
+      width: 100%;
+      max-width: 350px;
+      background: #fff;
+      border: 1px solid #d5d9d9;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(15,17,17,.15);
+      color: #0f1111;
+      font-size: 13px;
+      height: 31px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-amazon-secondary:hover {
+      background: #f7fafa;
+    }
+    .otp-sim-banner {
+      background: #f4fbf5;
+      border: 1px solid #b7ebc2;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: #1b5e20;
+    }
+    .otp-sim-banner strong {
+      font-size: 18px;
+      letter-spacing: 4px;
+      color: #0f1111;
+      background: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #81c784;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .footer-links {
+      border-top: 1px solid #eaeaea;
+      padding-top: 24px;
+      margin-top: 40px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+    .footer-links a {
+      color: #007185;
+      font-size: 11px;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+    .footer-copyright {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #555;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Amazon-style Top Logo -->
+  <a href="/" class="auth-logo">
+    <div class="auth-logo-text">SHUDDH <span>SEVA</span></div>
+    <span class="auth-logo-sub">FOODS • PURE & NATURAL</span>
+  </a>
+
+  <!-- ================= CARD 1: SIGN IN ================= -->
+  <div class="auth-card" id="cardSignIn">
+    <h1 class="auth-heading">Sign in</h1>
+
+    <form onsubmit="handleAmazonSignInContinue(event)">
+      <div class="form-group">
+        <label for="signinIdentifier">Email or mobile phone number</label>
+        <input type="text" id="signinIdentifier" class="input-text" placeholder="10-digit mobile number" required autofocus>
+      </div>
+
+      <button type="submit" class="btn-amazon-primary" id="btnSignInContinue">
+        Continue
+      </button>
+
+      <p class="disclaimer-text">
+        By continuing, you agree to Shuddh Seva Foods' <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
+      </p>
+
+      <div style="margin-top: 16px;">
+        <a href="#" onclick="showCard('create'); return false;" style="color:#007185; text-decoration:none; font-size:12px;">
+          ▸ Need an account? Create one here
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <div class="divider-row" id="dividerNewAccount">
+    <span>New to Shuddh Seva?</span>
+  </div>
+
+  <a href="#" class="btn-amazon-secondary" id="btnCreateAccountTrigger" onclick="showCard('create'); return false;">
+    Create your Shuddh Seva account
+  </a>
+
+  <!-- ================= CARD 2: CREATE ACCOUNT ================= -->
+  <div class="auth-card" id="cardCreateAccount" style="display: none;">
+    <h1 class="auth-heading">Create Account</h1>
+
+    <form onsubmit="handleAmazonCreateAccount(event)">
+      <div class="form-group">
+        <label for="createName">Your name</label>
+        <input type="text" id="createName" class="input-text" placeholder="First and last name" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="createPhone">Mobile number</label>
+        <div class="phone-row">
+          <div class="country-code-pill">IN +91</div>
+          <input type="tel" id="createPhone" class="input-text" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="createAddress">Delivery Address (Optional)</label>
+        <input type="text" id="createAddress" class="input-text" placeholder="House no., street, colony">
+      </div>
+
+      <div class="form-group">
+        <label for="createPincode">PIN Code (Optional)</label>
+        <input type="text" id="createPincode" class="input-text" placeholder="6-digit PIN" pattern="[0-9]{6}">
+      </div>
+
+      <p class="disclaimer-text" style="margin-top: 0; margin-bottom: 12px;">
+        To verify your number, we will send you a text message with a temporary code (OTP).
+      </p>
+
+      <button type="submit" class="btn-amazon-primary" id="btnVerifyMobileTrigger">
+        Verify mobile number
+      </button>
+
+      <p class="disclaimer-text">
+        By creating an account or logging in, you agree to Shuddh Seva's <a href="#">Conditions of Use</a> and <a href="#">Privacy Policy</a>.
+      </p>
+
+      <div style="border-top: 1px solid #e7e7e7; padding-top: 14px; margin-top: 16px;">
+        Already have an account? 
+        <a href="#" onclick="showCard('signin'); return false;" style="color:#007185; font-weight:700; text-decoration:none;">
+          Sign in ▸
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- ================= CARD 3: VERIFY OTP (AMAZON STYLE) ================= -->
+  <div class="auth-card" id="cardVerifyOtp" style="display: none;">
+    <h1 class="auth-heading" style="font-size:24px;">Verification required</h1>
+
+    <p style="font-size: 13px; margin-bottom: 14px; color:#0f1111;">
+      To verify your mobile number, we've sent a One Time Password (OTP) to 
+      <b id="targetPhoneText">+91 XXXXXXXXXX</b> 
+      (<a href="#" onclick="showCard('signin'); return false;" style="color:#007185; text-decoration:none;">Change</a>)
+    </p>
+
+    <!-- Simulated Live SMS Notification on Screen -->
+    <div class="otp-sim-banner" id="otpSimBanner">
+      <div>📲 Verification OTP sent to your phone:</div>
+      <strong id="simOtpCode">----</strong>
+      <div style="font-size: 11px; color:#555; margin-top:2px;">(Enter this 4-digit code below)</div>
+    </div>
+
+    <form onsubmit="handleAmazonVerifyOtp(event)">
+      <div class="form-group">
+        <label for="amazonOtpInput" style="display:flex; justify-content:space-between;">
+          <span>Enter OTP</span>
+          <a href="#" id="resendOtpLink" onclick="resendCurrentOtp(event)" style="color:#007185; font-size:12px; text-decoration:none;">
+            Resend OTP <span id="resendTimerSpan"></span>
+          </a>
+        </label>
+        <input type="text" id="amazonOtpInput" class="input-text otp-large-input" placeholder="••••" maxlength="4" pattern="[0-9]{4}" required autofocus>
+      </div>
+
+      <button type="submit" class="btn-amazon-primary" id="btnCompleteAuth">
+        Create your Shuddh Seva account
+      </button>
+
+      <p class="disclaimer-text">
+        By continuing, you agree to Shuddh Seva Foods' <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
+      </p>
+    </form>
+  </div>
+
+  <!-- Amazon-style Footer -->
+  <div class="footer-links">
+    <a href="#">Conditions of Use</a>
+    <a href="#">Privacy Notice</a>
+    <a href="#">Help & Support</a>
+  </div>
+  <div class="footer-copyright">
+    © 2026, Shuddh Seva Foods, Inc. or its affiliates. Jaipur, Rajasthan.
+  </div>
+
+  <script>
+    let activePhone = '';
+    let pendingName = '';
+    let pendingAddress = '';
+    let pendingPincode = '';
+    let isExistingAccount = false;
+    let resendInterval = null;
+
+    function showCard(card) {
+      document.getElementById('cardSignIn').style.display = (card === 'signin') ? 'block' : 'none';
+      document.getElementById('dividerNewAccount').style.display = (card === 'signin') ? 'block' : 'none';
+      document.getElementById('btnCreateAccountTrigger').style.display = (card === 'signin') ? 'inline-flex' : 'none';
+
+      document.getElementById('cardCreateAccount').style.display = (card === 'create') ? 'block' : 'none';
+      document.getElementById('cardVerifyOtp').style.display = (card === 'otp') ? 'block' : 'none';
+      clearInterval(resendInterval);
+    }
+
+    // Sign in - Step 1
+    async function handleAmazonSignInContinue(e) {
+      e.preventDefault();
+      const val = document.getElementById('signinIdentifier').value.trim();
+      let phone = val.replace(/\D/g, '');
+      if (phone.length > 10 && phone.startsWith('91')) phone = phone.slice(-10);
+
+      if (phone.length !== 10) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+
+      const btn = document.getElementById('btnSignInContinue');
+      btn.disabled = true;
+      btn.textContent = 'Please wait...';
+
+      try {
+        const res = await fetch('/api/auth/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          activePhone = data.phone;
+          isExistingAccount = data.is_existing;
+          pendingName = data.user_name || '';
+
+          // Transition to OTP screen
+          document.getElementById('targetPhoneText').textContent = `+91 ${activePhone}`;
+          document.getElementById('simOtpCode').textContent = data.otp_code || '----';
+          document.getElementById('btnCompleteAuth').textContent = isExistingAccount ? 'Sign In' : 'Create your Shuddh Seva account';
+
+          showCard('otp');
+          startResendTimer();
+        } else {
+          alert(data.error || 'Failed to send OTP.');
+        }
+      } catch (err) {
+        alert('Network error. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Continue';
+      }
+    }
+
+    // Create Account - Step 1
+    async function handleAmazonCreateAccount(e) {
+      e.preventDefault();
+      const name = document.getElementById('createName').value.trim();
+      const phone = document.getElementById('createPhone').value.trim();
+      const address = document.getElementById('createAddress').value.trim();
+      const pincode = document.getElementById('createPincode').value.trim();
+
+      if (!name) {
+        alert('Please enter your name.');
+        return;
+      }
+      if (phone.length !== 10) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+
+      const btn = document.getElementById('btnVerifyMobileTrigger');
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      try {
+        const res = await fetch('/api/auth/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          activePhone = data.phone;
+          pendingName = name;
+          pendingAddress = address;
+          pendingPincode = pincode;
+          isExistingAccount = data.is_existing;
+
+          document.getElementById('targetPhoneText').textContent = `+91 ${activePhone}`;
+          document.getElementById('simOtpCode').textContent = data.otp_code || '----';
+          document.getElementById('btnCompleteAuth').textContent = 'Create your Shuddh Seva account';
+
+          showCard('otp');
+          startResendTimer();
+        } else {
+          alert(data.error || 'Failed to send OTP.');
+        }
+      } catch (err) {
+        alert('Network error. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Verify mobile number';
+      }
+    }
+
+    // Step 2: Verify OTP
+    async function handleAmazonVerifyOtp(e) {
+      e.preventDefault();
+      const otpCode = document.getElementById('amazonOtpInput').value.trim();
+      if (otpCode.length !== 4) {
+        alert('Please enter the 4-digit OTP code.');
+        return;
+      }
+
+      const btn = document.getElementById('btnCompleteAuth');
+      btn.disabled = true;
+      btn.textContent = 'Verifying OTP...';
+
+      try {
+        const res = await fetch('/api/auth/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: activePhone,
+            otp_code: otpCode,
+            name: pendingName,
+            address: pendingAddress,
+            pincode: pendingPincode
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Success! Redirect back to home or previous page
+          window.location.href = '/?logged_in=1';
+        } else {
+          alert(data.error || 'Invalid OTP code. Please check and try again.');
+        }
+      } catch (err) {
+        alert('Network error verifying OTP.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = isExistingAccount ? 'Sign In' : 'Create your Shuddh Seva account';
+      }
+    }
+
+    async function resendCurrentOtp(e) {
+      e.preventDefault();
+      try {
+        const res = await fetch('/api/auth/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: activePhone })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('simOtpCode').textContent = data.otp_code;
+          startResendTimer();
+          alert('New OTP has been sent!');
+        }
+      } catch (e) {}
+    }
+
+    function startResendTimer() {
+      let seconds = 30;
+      const link = document.getElementById('resendOtpLink');
+      const span = document.getElementById('resendTimerSpan');
+      link.style.pointerEvents = 'none';
+      link.style.color = '#767676';
+
+      clearInterval(resendInterval);
+      resendInterval = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          span.textContent = `(${seconds}s)`;
+        } else {
+          clearInterval(resendInterval);
+          span.textContent = '';
+          link.style.pointerEvents = 'auto';
+          link.style.color = '#007185';
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Invoice #{{ order.order_id }} - Shuddh Seva Foods</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      color: #222;
+      background: #fdfdfd;
+    }
+    .invoice-box {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      border: 1px solid #eee;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      background: #fff;
+    }
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #5c2c16;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .brand-name {
+      font-size: 26px;
+      font-weight: bold;
+      color: #5c2c16;
+    }
+    .brand-sub {
+      font-size: 13px;
+      color: #2e7d32;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .fssai-box {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #555;
+    }
+    .invoice-meta {
+      text-align: right;
+    }
+    .invoice-meta h2 {
+      margin: 0 0 5px 0;
+      color: #5c2c16;
+      font-size: 20px;
+    }
+    .info-grid {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      gap: 20px;
+    }
+    .info-col {
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .info-col h3 {
+      font-size: 14px;
+      margin: 0 0 8px 0;
+      color: #5c2c16;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-size: 13px;
+    }
+    th {
+      background: #f8f6f0;
+      color: #5c2c16;
+      font-weight: bold;
+      text-align: left;
+    }
+    .text-right {
+      text-align: right;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .totals-area {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 15px;
+    }
+    .totals-table {
+      width: 320px;
+      border-collapse: collapse;
+    }
+    .totals-table td {
+      border: none;
+      padding: 6px 10px;
+    }
+    .grand-total {
+      font-size: 16px;
+      font-weight: bold;
+      color: #5c2c16;
+      border-top: 2px solid #5c2c16 !important;
+      border-bottom: 2px solid #5c2c16 !important;
+    }
+    .footer-note {
+      margin-top: 40px;
+      border-top: 1px dashed #ccc;
+      padding-top: 15px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+    .no-print {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+    .btn-print {
+      background: #5c2c16;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    @media print {
+      body { padding: 0; background: #fff; }
+      .invoice-box { border: none; box-shadow: none; padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print" style="max-width: 800px; margin: 10px auto 20px;">
+    <button class="btn-print" onclick="window.print()">🖨 Print Invoice / Packing Slip</button>
+  </div>
+
+  <div class="invoice-box">
+    <div class="top-header">
+      <div>
+        <div class="brand-name">♡ SHUDDH SEVA FOODS</div>
+        <div class="brand-sub">PURE & NATURAL SPICES</div>
+        <div class="fssai-box">
+          <b>FSSAI Lic. No:</b> 22226083000436<br>
+          <b>Jaipur, Rajasthan - 302001</b>
+        </div>
+      </div>
+      <div class="invoice-meta">
+        <h2>TAX INVOICE / BILL</h2>
+        <p style="margin:2px 0; font-size:13px;"><b>Order ID:</b> #{{ order.order_id }}</p>
+        <p style="margin:2px 0; font-size:13px;"><b>Date:</b> {{ order.created_at }}</p>
+        <p style="margin:2px 0; font-size:13px;"><b>Payment Mode:</b> {{ order.payment_method }} ({{ order.payment_status }})</p>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-col">
+        <h3>DISPATCHED FROM:</h3>
+        <strong>SHUDDH SEVA FOODS</strong><br>
+        Pure & Natural Spices Hub<br>
+        Jaipur, Rajasthan - 302001<br>
+        Phone: +91 6350474290 / +91 9352722265<br>
+        Email: infosevaspice@gmail.com
+      </div>
+      <div class="info-col">
+        <h3>DELIVER TO (CUSTOMER):</h3>
+        <strong>{{ order.customer_name }}</strong><br>
+        {{ order.address }}<br>
+        {% if order.landmark %}Landmark: {{ order.landmark }}<br>{% endif %}
+        {{ order.city }}, {{ order.state }} - <b>PIN: {{ order.pincode }}</b><br>
+        Phone: {{ order.phone }}<br>
+        {% if order.whatsapp %}WhatsApp: {{ order.whatsapp }}<br>{% endif %}
+        {% if order.email %}Email: {{ order.email }}{% endif %}
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 40px;" class="text-center">#</th>
+          <th>Item Description</th>
+          <th class="text-center" style="width: 90px;">Pack Size</th>
+          <th class="text-center" style="width: 70px;">Qty</th>
+          <th class="text-right" style="width: 90px;">Rate (₹)</th>
+          <th class="text-right" style="width: 100px;">Amount (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td class="text-center">{{ loop.index }}</td>
+          <td>
+            <strong>{{ item.name }}</strong>
+            <div style="font-size:11px; color:#555;">100% Pure & Natural Spices</div>
+          </td>
+          <td class="text-center">{{ item.size }}g</td>
+          <td class="text-center">{{ item.qty }}</td>
+          <td class="text-right">₹{{ item.price }}</td>
+          <td class="text-right">₹{{ item.price * item.qty }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="totals-area">
+      <table class="totals-table">
+        <tr>
+          <td>Subtotal:</td>
+          <td class="text-right">₹{{ order.subtotal }}</td>
+        </tr>
+        {% if order.discount > 0 %}
+        <tr>
+          <td style="color:#2e7d32;">Discount Applied:</td>
+          <td class="text-right" style="color:#2e7d32;">-₹{{ order.discount }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td>Delivery Fee:</td>
+          <td class="text-right">{{ "FREE" if order.delivery_fee == 0 else "₹" + order.delivery_fee|string }}</td>
+        </tr>
+        <tr class="grand-total">
+          <td>Grand Total:</td>
+          <td class="text-right">₹{{ order.total_amount|int }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="footer-note">
+      <p><b>हमारा देश से, शुद्धता का वादा • शुद्धता का वादा, सेहत का साथ</b></p>
+      <p>Thank you for placing your trust in Shuddh Seva Foods. Sourced from nature, processed with utmost care.</p>
+      <p style="font-size: 11px; color: #888;">For customer queries or feedback, contact infosevaspice@gmail.com or WhatsApp: +91 6350474290</p>
+    </div>
+  </div>
+
+</body>
+</html>

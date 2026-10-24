@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shuddh Seva Foods | 100% Pure & Natural Spices | शुद्धता का वादा</title>
+  <meta name="description" content="Authentic Indian spices sourced directly from select farms. 100% pure turmeric powder, red chilli powder, coriander powder. No artificial colour, rich aroma, FSSAI certified.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Top Notification Bar -->
+  <div class="top-notice">
+    <div class="top-contacts">
+      <a href="tel:+916350474290">📞 +91 6350474290</a>
+      <a href="tel:+919352722265">📞 +91 9352722265</a>
+      <a href="mailto:infosevaspice@gmail.com">✉️ infosevaspice@gmail.com</a>
+    </div>
+    <div class="top-highlight">
+      <span>🚚 <b>FREE Delivery</b> on orders above ₹499!</span>
+      <span>•</span>
+      <span>🌿 <b>FSSAI Lic. No:</b> 22226083000436</span>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header (Strictly for Customers - Admin links hidden) -->
+  <header>
+    <a href="#" class="brand">
+      <div class="brand-icon">♡</div>
+      <div class="brand-text">
+        <h1>SHUDDH SEVA</h1>
+        <small>FOODS • PURE & NATURAL</small>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#products">Pure Spices</a>
+      <a href="#purity">Purity Promise</a>
+      <a href="#reviews">Customer Reviews</a>
+      <a href="#contact">Contact & Help</a>
+    </nav>
+
+    <div class="header-right">
+      <!-- Customer OTP Auth Pill / Button (Amazon Style) -->
+      <div id="userAuthContainer">
+        {% if current_user %}
+        <div class="user-dropdown">
+          <button type="button" class="btn-user-pill" style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; padding:5px 12px; background:#fff; border:1px solid #d5d9d9;">
+            <small style="font-size:11px; color:#565959;">Hello, {{ current_user.name.split(' ')[0] }}</small>
+            <span style="font-weight:700; font-size:13px; color:#0f1111;">Account & Orders ▾</span>
+          </button>
+          <div class="user-menu">
+            <button type="button" onclick="openMyOrdersModal()">📦 Your Orders</button>
+            <a href="/login" style="color:var(--primary);">👤 Switch Account</a>
+            <button type="button" onclick="handleLogout()" style="color:#c53030;">⏻ Sign Out</button>
+          </div>
+        </div>
+        {% else %}
+        <a href="/login" class="btn-auth" style="display:inline-flex; flex-direction:column; align-items:flex-start; line-height:1.2; padding:5px 12px; text-decoration:none; background:#fff; border:1px solid #d5d9d9;">
+          <small style="font-size:11px; color:#565959;">Hello, sign in</small>
+          <span style="font-weight:700; font-size:13px; color:#0f1111;">Account & Lists ▾</span>
+        </a>
+        {% endif %}
+      </div>
+
+      <button type="button" class="btn-track" onclick="openTrackModal()">
+        🔍 Track Order
+      </button>
+
+      <button type="button" class="btn-cart" id="cartOpenBtn">
+        🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-text">
+      <div class="hero-tag">🌿 100% PURE & NATURAL SPICES</div>
+      <h2>Authentic Spices For A<br><span>Healthier Everyday Life</span></h2>
+      <div class="hero-slogan">"हमारा देश से, शुद्धता का वादा • सेहत का साथ"</div>
+      <p>
+        Straight from select organic farms to your kitchen. Sourced with devotion, cold-ground to seal in natural essential oils, and packed hygienically without artificial colours or preservatives.
+      </p>
+
+      <div class="hero-pills">
+        <span class="hero-pill">✓ No Artificial Colours</span>
+        <span class="hero-pill">✓ High Natural Curcumin</span>
+        <span class="hero-pill">✓ Rich Traditional Aroma</span>
+        <span class="hero-pill">✓ Food-Grade Zip Pouches</span>
+      </div>
+
+      <div class="hero-btns">
+        <a href="#products"><button class="btn-cta">Shop Pure Spices Now ↓</button></a>
+        <a href="#purity"><button class="btn-secondary">Explore Purity Promise →</button></a>
+      </div>
+    </div>
+
+    <div class="hero-image-wrap">
+      <img src="{{ url_for('static', filename='images/combo-front.png') }}" alt="Shuddh Seva Pure Spices Pack Trio">
+      <div class="hero-float-card">
+        <div class="icon">🛡️</div>
+        <div>
+          <strong>FSSAI Certified Purity</strong>
+          <small>Lic. No. 22226083000436 • Jaipur</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Badges Bar -->
+  <div class="trust-bar">
+    <div class="trust-item">
+      <div class="trust-icon">🌱</div>
+      <div>
+        <strong>100% Pure & Natural</strong>
+        <small>Zero adulteration guarantee</small>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🎨</div>
+      <div>
+        <strong>No Artificial Colours</strong>
+        <small>Free from Sudan dyes & lead</small>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">♨️</div>
+      <div>
+        <strong>Rich Natural Aroma</strong>
+        <small>Slow-ground with essential oils</small>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🔒</div>
+      <div>
+        <strong>Airtight Zip Pouches</strong>
+        <small>Preserves freshness & crunch</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Catalog Section with Interactive Front & Back Display -->
+  <section class="section" id="products">
+    <div class="section-header">
+      <div>
+        <div class="eyebrow">OUR SPICE COLLECTION</div>
+        <h2 class="section-title">Farm-Fresh Pure Spices</h2>
+        <p style="color:var(--muted); font-size:14px; margin-top:4px;">
+          Tip: Click the <b>"🔄 Show Back"</b> button on any pouch to inspect the complete packaging label & ingredients!
+        </p>
+      </div>
+
+      <div class="filter-tools">
+        <input type="text" id="searchInput" placeholder="Search spices (e.g. Haldi, Chilli)...">
+        <select id="categoryFilter">
+          <option value="all">All Spice Products</option>
+          <option value="powder">Pure Powders</option>
+          <option value="combo">Super Saver Combos</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="products-grid" id="productGrid">
+      <!-- Generated dynamically by shop.js -->
+    </div>
+  </section>
+
+  <!-- Purity & Lab-Tested Certification Section -->
+  <section class="purity-section" id="purity">
+    <div style="text-align: center; max-width: 720px; margin: 0 auto 35px;">
+      <div class="eyebrow">UNCOMPROMISING QUALITY</div>
+      <h2 class="section-title">Why Indian Families Trust Shuddh Seva</h2>
+      <p style="color:var(--muted); font-size:14px; margin-top:6px;">
+        Most market spices are blended with artificial colourants, starch fillers, and synthetic preservatives. At Shuddh Seva Foods, we stand for uncompromising purity.
+      </p>
+    </div>
+
+    <!-- FSSAI Certified Official Banner -->
+    <div class="fssai-banner">
+      <div class="fssai-brand">
+        <div class="fssai-logo-box">fssai</div>
+        <div class="fssai-details">
+          <h4>Food Safety and Standards Authority of India</h4>
+          <p>Licensed & Certified Food Business Enterprise • Jaipur, Rajasthan</p>
+        </div>
+      </div>
+      <div class="fssai-lic-tag">
+        LICENSE NO: 22226083000436
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="comparison-grid">
+      <div class="comp-card good">
+        <h3>🌿 Shuddh Seva Foods Purity</h3>
+        <ul class="comp-list">
+          <li><span>✅</span> <strong>100% Pure Whole Spices:</strong> Single-origin raw spices from verified farms.</li>
+          <li><span>✅</span> <strong>Cold Grinding Technique:</strong> Retains high volatile essential oils & aroma.</li>
+          <li><span>✅</span> <strong>Zero Artificial Colour:</strong> Absolutely no synthetic yellow/red dyes.</li>
+          <li><span>✅</span> <strong>No Fillers or Starch:</strong> 100% spice powder without adulterants.</li>
+          <li><span>✅</span> <strong>Resealable Zip Pouches:</strong> Keeps moisture and insects away for months.</li>
+        </ul>
+      </div>
+
+      <div class="comp-card bad">
+        <h3>⚠️ Conventional Market Spices</h3>
+        <ul class="comp-list">
+          <li><span>❌</span> <strong>Mixed Sourcing:</strong> Low-grade broken spices and foreign matter.</li>
+          <li><span>❌</span> <strong>High-Heat Grinding:</strong> Essential oils and nutritional curcumin evaporate.</li>
+          <li><span>❌</span> <strong>Synthetic Dyes:</strong> Added artificial colourants for deceptive look.</li>
+          <li><span>❌</span> <strong>Heavy Fillers:</strong> Mixed with starch, chalk, or spent spice residue.</li>
+          <li><span>❌</span> <strong>Flimsy Packaging:</strong> Loses flavour and gets stale quickly.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real Customer Reviews Section -->
+  <section class="section" id="reviews">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 30px;">
+      <div class="eyebrow">VERIFIED REVIEWS</div>
+      <h2 class="section-title">Loved by Kitchens Across India</h2>
+      <p style="color:var(--muted); font-size:14px;">Real feedback from homemakers, food lovers, and catering chefs.</p>
+    </div>
+
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p class="review-text">
+          "The moment I opened the Turmeric pouch, the natural golden aroma filled my entire kitchen. It is completely different from branded grocery store haldi. You need only half a spoon for rich colour and taste!"
+        </p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">S</div>
+          <div class="reviewer-info">
+            <strong>Sunita Sharma</strong>
+            <small>Jaipur, Rajasthan • Verified Buyer</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p class="review-text">
+          "The Red Chilli Powder has the real fiery kick and beautiful red colour without looking artificial. Made laal maas and tadka dal with it, flavour was top notch. Packing with the zip lock is very convenient."
+        </p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">R</div>
+          <div class="reviewer-info">
+            <strong>Rajesh Rathore</strong>
+            <small>Jodhpur, Rajasthan • Verified Buyer</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p class="review-text">
+          "Ordered the 3-in-1 combo pack. Fast doorstep delivery in 2 days. The Coriander powder is so fresh and fragrant, gravies turn out thick and flavorful. Shuddh Seva is definitely our family's permanent spice choice now!"
+        </p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">P</div>
+          <div class="reviewer-info">
+            <strong>Pooja Agarwal</strong>
+            <small>Delhi NCR • Verified Buyer</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Wholesale Inquiries Section -->
+  <section class="contact-section" id="contact">
+    <div class="contact-grid">
+      <div class="contact-info-box">
+        <h3>Connect With Us</h3>
+        <p>
+          Have questions about our pure spices, custom order requirements, or wholesale distribution for your retail store, restaurant or cloud kitchen? Reach out anytime!
+        </p>
+
+        <div class="contact-item">
+          <div>📍</div>
+          <div>
+            <strong>Manufacturing & Dispatch Hub:</strong><br>
+            SHUDDH SEVA FOODS, Jaipur, Rajasthan - 302001
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div>📞</div>
+          <div>
+            <strong>Customer Care & Orders:</strong><br>
+            <a href="tel:+916350474290">+91 6350474290</a> / <a href="tel:+919352722265">+91 9352722265</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div>✉️</div>
+          <div>
+            <strong>Official Email:</strong><br>
+            <a href="mailto:infosevaspice@gmail.com">infosevaspice@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div>💬</div>
+          <div>
+            <strong>WhatsApp Instant Help:</strong><br>
+            <a href="https://wa.me/916350474290" target="_blank">Chat with our team on WhatsApp ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <h3>Send an Inquiry / Bulk Request</h3>
+        <p>Fill out the form and our team will get in touch with you within 2 hours.</p>
+
+        <form id="contactForm" onsubmit="submitContactForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactName">Your Name *</label>
+              <input type="text" id="contactName" placeholder="e.g. Ramesh Kumar" required>
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Phone / WhatsApp Number *</label>
+              <input type="tel" id="contactPhone" placeholder="e.g. 9876543210" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactEmail">Email Address</label>
+              <input type="email" id="contactEmail" placeholder="yourname@gmail.com">
+            </div>
+            <div class="form-group">
+              <label for="contactSubject">Inquiry Type</label>
+              <select id="contactSubject">
+                <option value="Retail Order Query">Retail Order Query</option>
+                <option value="Bulk / Wholesale Purchase">Bulk / Wholesale Purchase</option>
+                <option value="Distributor / Retail Dealership">Distributor / Retail Dealership</option>
+                <option value="Feedback / Suggestion">Feedback / Suggestion</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contactMessage">Your Message *</label>
+            <textarea id="contactMessage" rows="4" placeholder="Tell us your requirement or question..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="contactSubmitBtn">Send Message to Team →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (Strictly Customer-facing - Admin links removed) -->
+  <footer>
+    <div class="footer-grid" style="grid-template-columns: 2fr 1fr 1.2fr;">
+      <div class="footer-col">
+        <h4 style="font-size:18px;">♡ SHUDDH SEVA FOODS</h4>
+        <p style="margin-bottom:12px;">
+          "हमारा देश से, शुद्धता का वादा • सेहत का साथ"<br>
+          Bringing you 100% pure, natural, and authentic spices packed with pure love and traditional devotion.
+        </p>
+        <p style="font-size:12px; color:#aaa;">
+          <b>FSSAI Lic. No:</b> 22226083000436<br>
+          Packed & Marketed by SHUDDH SEVA, Jaipur, Rajasthan - 302001
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Pure Spices</h4>
+        <a href="#products">Turmeric Powder (हल्दी)</a>
+        <a href="#products">Red Chilli Powder (मिर्च)</a>
+        <a href="#products">Coriander Powder (धनिया)</a>
+        <a href="#products">Kitchen Trio Combo Pack</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Customer Care</h4>
+        <a href="tel:+916350474290">Call: +91 6350474290</a>
+        <a href="tel:+919352722265">Call: +91 9352722265</a>
+        <a href="mailto:infosevaspice@gmail.com">infosevaspice@gmail.com</a>
+        <a href="https://wa.me/916350474290" target="_blank">Order via WhatsApp</a>
+        <a href="#" onclick="openTrackModal()">Track Existing Order</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 Shuddh Seva Foods. All rights reserved. | FSSAI Lic. 22226083000436</div>
+      <div>Made with ❤️ in Jaipur, Rajasthan, India</div>
+    </div>
+  </footer>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. Customer OTP Verification Modal (Amazon Style Signup & Login) -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-dialog" style="max-width:380px; padding:24px 26px; border:1px solid #d5d9d9; border-radius:8px;">
+      <button type="button" class="modal-close-btn" onclick="closeAuthModal()">×</button>
+      
+      <div id="authReasonBox" class="auth-notice-banner" style="display:none; margin-bottom:14px;"></div>
+
+      <div style="text-align:center; margin-bottom:16px;">
+        <div style="font-size:22px; font-weight:800; color:#111;">SHUDDH <span style="color:#e47911;">SEVA</span></div>
+        <small style="letter-spacing:2px; font-size:10px; color:#176b3b; font-weight:700;">FOODS • PURE & NATURAL</small>
+      </div>
+
+      <!-- Step 1: Enter Phone Number -->
+      <div id="otpStepPhone">
+        <h2 style="font-size:24px; font-weight:400; margin-bottom:14px; color:#0f1111;">Sign in or create account</h2>
+        <form onsubmit="handleSendOtp(event)">
+          <div class="form-group" style="margin-bottom:14px;">
+            <label style="font-weight:700; font-size:13px; display:block; margin-bottom:4px;">Enter mobile number</label>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="background:#f0f2f2; border:1px solid #888c8c; border-radius:4px; height:31px; padding:0 10px; font-weight:700; font-size:13px; display:flex; align-items:center;">IN +91</span>
+              <input type="tel" id="otpPhoneInput" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required autofocus style="flex:1; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:14px; font-weight:600; outline:none;">
+            </div>
+          </div>
+
+          <button type="submit" id="sendOtpBtn" style="width:100%; height:31px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111;">
+            Continue
+          </button>
+
+          <p style="font-size:11px; color:#565959; margin-top:16px; line-height:1.5;">
+            By continuing, you agree to Shuddh Seva Foods' <a href="#" style="color:#007185; text-decoration:none;">Conditions of Use</a> and <a href="#" style="color:#007185; text-decoration:none;">Privacy Notice</a>.
+          </p>
+
+          <div style="margin-top:16px; border-top:1px solid #e7e7e7; padding-top:12px; text-align:center;">
+            <a href="/login" style="color:#007185; text-decoration:none; font-size:12px;">
+              Open Full Screen Sign-In Page ▸
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Enter OTP & Complete Profile if New -->
+      <div id="otpStepVerify" style="display:none;">
+        <h2 style="font-size:22px; font-weight:400; margin-bottom:10px; color:#0f1111;" id="verifyOtpHeading">Verification required</h2>
+        <p style="font-size:12px; margin-bottom:12px; color:#0f1111;">
+          We've sent a One Time Password (OTP) to <b id="displayTargetPhone">+91 XXXXXXXXXX</b> 
+          (<a href="#" onclick="resetOtpForm(); return false;" style="color:#007185; text-decoration:none;">Change</a>)
+        </p>
+
+        <!-- Simulated Live OTP Alert Box -->
+        <div class="otp-box-live" id="otpLiveCodeBox" style="background:#f4fbf5; border:1px solid #b7ebc2; padding:10px; border-radius:6px; margin-bottom:14px; text-align:center;">
+          <div style="font-size:11.5px; font-weight:600; color:#1b5e20;">📲 SMS OTP received on phone:</div>
+          <div class="otp-code-highlight" id="otpCodeDisplay" style="font-size:20px; font-weight:800; letter-spacing:6px; background:#fff; border:1px solid #81c784; padding:2px 10px; border-radius:4px; display:inline-block; margin:4px 0;">----</div>
+          <div style="font-size:11px; color:#555;">(Enter this 4-digit code below)</div>
+        </div>
+
+        <form onsubmit="handleVerifyOtp(event)">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>Enter OTP</span>
+              <a href="#" id="resendOtpBtn" onclick="handleSendOtp(event)" style="color:#007185; font-size:11px; text-decoration:none;">
+                Resend OTP <span id="resendTimer"></span>
+              </a>
+            </label>
+            <input type="text" id="otpDigitInput" class="otp-digit-input" placeholder="••••" maxlength="4" pattern="[0-9]{4}" required autofocus style="height:38px; font-size:20px; letter-spacing:6px; text-align:center; font-weight:800; border:1px solid #888c8c; border-radius:4px; width:100%;">
+          </div>
+
+          <!-- New User Additional Details (shown only if first-time user) -->
+          <div id="newUserFields" style="display:none; border-top:1px solid #e7e7e7; padding-top:12px; margin-top:12px;">
+            <h4 style="font-size:13px; color:#0f1111; margin-bottom:10px; font-weight:700;">
+              Your Information:
+            </h4>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label style="font-size:12px; font-weight:700; margin-bottom:3px; display:block;">Your Name *</label>
+              <input type="text" id="newUserName" placeholder="First and last name" style="width:100%; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:13px;">
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label style="font-size:12px; font-weight:700; margin-bottom:3px; display:block;">Delivery Address (Optional)</label>
+              <input type="text" id="newUserAddress" placeholder="House no, Street address" style="width:100%; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:13px;">
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label style="font-size:12px; font-weight:700; margin-bottom:3px; display:block;">PIN Code (Optional)</label>
+              <input type="text" id="newUserPincode" placeholder="6-digit PIN" pattern="[0-9]{6}" style="width:100%; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:13px;">
+            </div>
+          </div>
+
+          <button type="submit" id="verifyOtpBtn" style="width:100%; height:31px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111; margin-top:8px;">
+            Continue
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. Customer My Orders Modal -->
+  <div class="modal-overlay" id="myOrdersModal">
+    <div class="modal-dialog" style="max-width:580px;">
+      <button type="button" class="modal-close-btn" onclick="closeMyOrdersModal()">×</button>
+      <h2 style="color:var(--primary); font-size:22px; margin-bottom:4px;">My Spice Orders</h2>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:18px;">Track your past orders and download official bills.</p>
+
+      <div id="myOrdersContainer" style="max-height:60vh; overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <!-- 3. Quick View Modal with Front & Back Switcher -->
+  <div class="modal-overlay" id="quickViewModal">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeQuickView()">×</button>
+      
+      <div class="quickview-grid">
+        <div class="qv-image-box">
+          <img id="qvImage" src="" alt="Product packaging preview">
+          
+          <!-- Front / Back Interactive Switcher -->
+          <div class="qv-toggle-bar">
+            <button type="button" class="qv-toggle-btn active" id="qvFrontBtn" onclick="switchQvImage('front')">
+              🖼️ Front Packaging
+            </button>
+            <button type="button" class="qv-toggle-btn" id="qvBackBtn" onclick="switchQvImage('back')">
+              📋 Back Side Label & Details
+            </button>
+          </div>
+          <small style="display:block; margin-top:8px; color:var(--muted); font-size:11px;">
+            Hover to zoom packaging • Click buttons to flip sides
+          </small>
+        </div>
+
+        <div class="qv-details">
+          <div class="eyebrow" style="margin-bottom:2px;">SHUDDH SEVA FOODS</div>
+          <h2 id="qvTitle">Product Name</h2>
+          <div class="hindi" id="qvHindi">हल्दी पाउडर</div>
+
+          <!-- Price & Discount -->
+          <div class="price-row" style="margin: 12px 0;">
+            <span class="price-main" id="qvPrice" style="font-size:26px;">₹0</span>
+            <span class="price-mrp" id="qvMrp" style="font-size:16px;">₹0</span>
+            <span class="price-save" id="qvSave">SAVE</span>
+          </div>
+
+          <!-- Pack Size Selector -->
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px; font-weight:700; display:block; margin-bottom:6px;">Select Pack Size:</label>
+            <div class="size-selector" id="qvSizes"></div>
+          </div>
+
+          <!-- Tabbed Info -->
+          <div class="qv-tabs">
+            <button type="button" class="qv-tab active" id="tabBtn-overview" onclick="setQvTab('overview')">Overview</button>
+            <button type="button" class="qv-tab" id="tabBtn-ingredients" onclick="setQvTab('ingredients')">Ingredients & Purity</button>
+            <button type="button" class="qv-tab" id="tabBtn-usage" onclick="setQvTab('usage')">Usage & Storage</button>
+            <button type="button" class="qv-tab" id="tabBtn-legal" onclick="setQvTab('legal')">FSSAI & Label</button>
+          </div>
+          <div class="qv-tab-content" id="qvTabContent"></div>
+
+          <!-- Add to cart stepper -->
+          <div style="display:flex; gap:12px; align-items:center; margin-top:20px;">
+            <div class="qty-stepper" style="height:44px;">
+              <button type="button" id="qvQtyMinus" style="width:36px; height:44px;">-</button>
+              <input type="text" id="qvQtyInput" value="1" readonly style="width:36px; text-align:center; border:none; font-weight:700; font-size:15px;">
+              <button type="button" id="qvQtyPlus" style="width:36px; height:44px;">+</button>
+            </div>
+            <button type="button" class="btn-add-cart" onclick="addFromQuickView()" style="flex:1; height:44px;">
+              🛒 Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Cart & Checkout Modal -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal-dialog cart-drawer">
+      <button type="button" class="modal-close-btn" onclick="closeCart()">×</button>
+      
+      <h2 style="font-size:22px; color:var(--primary); margin-bottom:4px;">Your Shopping Cart</h2>
+      <div id="freeDeliveryNotice" style="padding:8px 12px; border-radius:8px; font-size:12.5px; margin-bottom:14px; text-align:center;"></div>
+
+      <!-- Mandatory OTP Auth Alert in Cart -->
+      <div id="checkoutAuthWarning" class="auth-notice-banner" style="display:none;">
+        <span style="font-size:20px;">⚠️</span>
+        <div>
+          <b>Order karne ke liye Mobile OTP verification jaruri hai!</b><br>
+          <button type="button" onclick="openAuthModal('⚠️ Order karne ke liye Mobile OTP verification jaruri hai.')" style="background:var(--primary); color:#fff; border:none; padding:5px 12px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; margin-top:4px;">
+            Yahan Click Karke Mobile OTP se Login/Signup Karein →
+          </button>
+        </div>
+      </div>
+
+      <div class="cart-items-list" id="cartItemsList"></div>
+
+      <div id="cartSummaryArea">
+        <!-- Coupon Box -->
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <input type="text" id="couponInput" placeholder="Coupon code (e.g. SHUDDH10)" style="flex:1; padding:9px 12px; border:1px solid var(--border); border-radius:8px; text-transform:uppercase; font-size:13px;">
+          <button type="button" onclick="applyCoupon()" style="background:var(--primary); color:#fff; border:none; padding:9px 16px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer;">Apply</button>
+        </div>
+
+        <div class="cart-summary-box">
+          <div class="summary-line">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">₹0</span>
+          </div>
+          <div class="summary-line">
+            <span>Discount Coupon</span>
+            <span id="cartDiscount" style="color:var(--accent);">₹0</span>
+          </div>
+          <div class="summary-line">
+            <span>Delivery Fee</span>
+            <span id="cartDelivery">₹0</span>
+          </div>
+          <div class="summary-line total">
+            <span>Grand Total</span>
+            <span id="cartTotal">₹0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Form Area -->
+      <div id="checkoutFormArea">
+        <h3 style="font-size:16px; color:var(--primary); margin-bottom:12px; border-top:1px solid var(--border); padding-top:14px;">
+          Delivery & Contact Details
+        </h3>
+
+        <form id="orderCheckoutForm" onsubmit="submitOrder(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="custName" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" id="custPhone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+            </div>
+          </div>
+
+          <div class="form-group" style="display:flex; align-items:center; gap:8px; margin-top:-6px;">
+            <input type="checkbox" id="sameAsPhoneCheckbox" checked style="width:auto;">
+            <label for="sameAsPhoneCheckbox" style="margin:0; font-size:12px;">WhatsApp number is same as Phone</label>
+          </div>
+
+          <div class="form-group">
+            <label>Delivery Address (House No, Street, Colony) *</label>
+            <input type="text" id="custAddress" placeholder="Complete street address" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Landmark</label>
+              <input type="text" id="custLandmark" placeholder="Nearby temple, school, shop">
+            </div>
+            <div class="form-group">
+              <label>City *</label>
+              <input type="text" id="custCity" placeholder="City" value="Jaipur" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>State *</label>
+              <input type="text" id="custState" placeholder="State" value="Rajasthan" required>
+            </div>
+            <div class="form-group">
+              <label>PIN Code *</label>
+              <input type="text" id="custPincode" placeholder="6-digit PIN code" required pattern="[0-9]{6}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address (Optional)</label>
+            <input type="email" id="custEmail" placeholder="To receive order updates">
+          </div>
+
+          <div class="form-group">
+            <label>Delivery Note / Instructions</label>
+            <input type="text" id="custNotes" placeholder="e.g. Call before delivery">
+          </div>
+
+          <!-- Payment Method Selection -->
+          <label style="font-size:12px; font-weight:700; display:block; margin-top:14px;">Select Payment Mode:</label>
+          <div class="payment-methods">
+            <div class="payment-method-card selected" id="pay-COD" onclick="selectPaymentMethod('COD')">
+              <span style="font-size:20px;">💵</span>
+              <div>
+                <strong>Cash on Delivery</strong>
+                <div style="font-size:11px; color:var(--muted);">Pay cash at doorstep</div>
+              </div>
+            </div>
+
+            <div class="payment-method-card" id="pay-UPI" onclick="selectPaymentMethod('UPI')">
+              <span style="font-size:20px;">📱</span>
+              <div>
+                <strong>UPI / QR Code</strong>
+                <div style="font-size:11px; color:var(--muted);">GPay, PhonePe, Paytm</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic UPI Box (visible when UPI chosen) -->
+          <div class="upi-details-box" id="upiDetailsBox">
+            <h4 style="color:var(--primary); font-size:14px; margin-bottom:6px;">Scan & Pay via Any UPI App</h4>
+            <p style="font-size:12px; color:var(--muted); margin-bottom:10px;">GPay • PhonePe • Paytm • BHIM</p>
+            <img id="upiQrCode" src="" alt="UPI QR Code" style="width:160px; height:160px; border-radius:10px; border:1px solid #ddd;">
+            <p style="margin-top:8px; font-weight:700; font-size:13px; color:var(--primary);">
+              UPI ID: <code>6350474290@paytm</code>
+            </p>
+            <small style="color:var(--muted);">You can also pay after placing order via WhatsApp!</small>
+          </div>
+
+          <button type="submit" class="btn-cta" id="placeOrderBtn" style="width:100%; justify-content:center; margin-top:10px;">
+            Place Order Now →
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. Order Confirmation Modal -->
+  <div class="modal-overlay" id="orderConfirmModal">
+    <div class="modal-dialog" style="max-width:540px; text-align:center;">
+      <div style="font-size:54px; margin-bottom:10px;">🎉</div>
+      <h2 style="color:var(--accent); font-size:24px; margin-bottom:4px;">Order Placed Successfully!</h2>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:18px;">
+        Thank you for ordering with Shuddh Seva Foods. Your order details have been securely recorded.
+      </p>
+
+      <div style="background:#faf6ed; border:1px solid var(--border); border-radius:14px; padding:20px; text-align:left; margin-bottom:20px;">
+        <p style="font-size:14px; margin-bottom:6px;"><b>Order ID:</b> <span id="confirmOrderId" style="color:var(--primary); font-weight:800;"></span></p>
+        <p style="font-size:14px; margin-bottom:6px;"><b>Customer Name:</b> <span id="confirmCustName"></span></p>
+        <p style="font-size:14px; margin-bottom:6px;"><b>Total Amount:</b> <span id="confirmTotal" style="color:var(--primary); font-weight:800; font-size:16px;"></span></p>
+        <p style="font-size:13px; color:var(--muted);"><b>Delivering To:</b> <span id="confirmAddress"></span></p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a id="confirmWaBtn" href="#" target="_blank" style="background:#25d366; color:#fff; padding:14px; border-radius:10px; font-weight:700; font-size:15px; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+          💬 Confirm Order on WhatsApp Instantly ↗
+        </a>
+        <a id="confirmPrintBtn" href="#" target="_blank" style="background:var(--bg-light); color:var(--primary); border:1px solid var(--border); padding:10px; border-radius:10px; font-weight:600; font-size:13px;">
+          🖨️ View & Print Order Receipt
+        </a>
+        <button type="button" onclick="closeOrderConfirmation()" style="background:none; border:none; color:var(--muted); font-size:13px; cursor:pointer; margin-top:6px;">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Order Tracking Modal -->
+  <div class="modal-overlay" id="trackModal">
+    <div class="modal-dialog" style="max-width:520px;">
+      <button type="button" class="modal-close-btn" onclick="closeTrackModal()">×</button>
+      <h2 style="color:var(--primary); font-size:22px; margin-bottom:6px;">Track Your Spice Order</h2>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:18px;">
+        Enter your <b>Order ID</b> (e.g. SS-261024-849) or your <b>Phone Number</b> to check real-time status.
+      </p>
+
+      <form onsubmit="searchTrackOrder(event)" style="display:flex; gap:8px;">
+        <input type="text" id="trackQueryInput" placeholder="Enter Order ID or 10-digit Phone" style="flex:1; padding:11px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px;" required>
+        <button type="submit" style="background:var(--primary); color:#fff; border:none; padding:11px 18px; border-radius:8px; font-weight:700; cursor:pointer;">
+          Track 🔍
+        </button>
+      </form>
+
+      <div id="trackResultBox"></div>
+    </div>
+  </div>
+
+  <!-- Floating Action Buttons -->
+  <div class="floating-actions">
+    <a href="https://wa.me/916350474290?text=Hello%20Shuddh%20Seva%20Foods%2C%20I%20want%20to%20order%20spices%21" target="_blank" class="btn-float wa" title="Chat on WhatsApp">
+      💬
+    </a>
+    <a href="tel:+916350474290" class="btn-float call" title="Call Us Directly">
+      📞
+    </a>
+  </div>
+
+  <!-- Inject Products Data to JS -->
+  <script>
+    window.SHOP_PRODUCTS = {{ products|tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
+</body>
+</html>

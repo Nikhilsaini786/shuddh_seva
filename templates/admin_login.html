@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login | Shuddh Seva Foods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #5c2c16;
+      --primary-dark: #3a1a0c;
+      --accent: #2e7d32;
+      --gold: #d4a340;
+      --bg: #f8f6f0;
+      --card: #ffffff;
+      --text: #261912;
+      --text-muted: #736b63;
+      --border: #e8e2d5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(92, 44, 22, 0.08);
+      text-align: center;
+    }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 68px;
+      height: 68px;
+      background: #fdf5e6;
+      border-radius: 50%;
+      color: var(--primary);
+      font-size: 32px;
+      margin-bottom: 16px;
+      border: 2px solid var(--gold);
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .form-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(92, 44, 22, 0.12);
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+    .error-msg {
+      background: #fde8e8;
+      color: #c53030;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .hint {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: #faf8f5;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+    }
+    .back-store {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back-store:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="brand-logo">🌿</div>
+    <h1>SHUDDH SEVA</h1>
+    <p class="subtitle">Foods Admin Control Center</p>
+    
+    {% if error %}
+    <div class="error-msg">⚠️ {{ error }}</div>
+    {% endif %}
+    
+    <form method="POST" action="/admin/login">
+      <div class="form-group">
+        <label for="password">Admin Security Passcode</label>
+        <input type="password" id="password" name="password" placeholder="Enter admin password" required autofocus>
+      </div>
+      <button type="submit" class="btn">Enter Admin Panel →</button>
+    </form>
+    
+    <div class="hint">
+      🔑 Default passcode: <b>shuddh123</b>
+    </div>
+    
+    <a href="/" class="back-store">← Return to Online Store</a>
+  </div>
+</body>
+</html>

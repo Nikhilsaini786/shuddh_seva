@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | Shuddh Seva Foods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4a210f;
+      --primary-light: #6a341b;
+      --accent: #176b3b;
+      --accent-light: #e8f5e9;
+      --gold: #c8a34b;
+      --gold-light: #fff9e6;
+      --bg: #f5f2ea;
+      --surface: #ffffff;
+      --ink: #221711;
+      --muted: #6f6760;
+      --border: #e3dcd1;
+      --danger: #c53030;
+      --warning: #d97706;
+      --info: #2563eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Top Bar */
+    .admin-bar {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 4%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      font-size: 24px;
+      background: rgba(255,255,255,0.12);
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .brand-title small {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(23, 107, 59, 0.4);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+    .btn-top {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-top:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    /* Main Layout */
+    .container {
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 4% 60px;
+      flex: 1;
+    }
+    /* Stat Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 12px rgba(74, 33, 15, 0.04);
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+    .stat-icon.sales { background: #e8f5e9; color: #1b5e20; }
+    .stat-icon.orders { background: #fff8e1; color: #b78103; }
+    .stat-icon.pending { background: #fef3c7; color: #b45309; }
+    .stat-icon.delivered { background: #dcfce7; color: #15803d; }
+    .stat-icon.inquiries { background: #e0f2fe; color: #0369a1; }
+    .stat-info h3 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .stat-info p {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    /* Controls Bar */
+    .controls-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #faf8f5;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-box {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      min-width: 240px;
+      outline: none;
+    }
+    .search-box:focus {
+      border-color: var(--primary);
+    }
+    .btn-action {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action:hover {
+      background: #11502b;
+    }
+    /* Orders Table */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(74, 33, 15, 0.04);
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    thead {
+      background: #fdfbf7;
+      border-bottom: 2px solid var(--border);
+    }
+    th {
+      padding: 14px 16px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:hover {
+      background: #fdfbf7;
+    }
+    td {
+      padding: 14px 16px;
+      vertical-align: middle;
+    }
+    .order-id {
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .customer-info strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+    }
+    .customer-info small {
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge.new-order { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge.confirmed { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+    .badge.shipped { background: #ede9fe; color: #7c3aed; border: 1px solid #ddd6fe; }
+    .badge.delivered { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+    .badge.cancelled { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+    .badge.cod { background: #f3f4f6; color: #4b5563; }
+    .badge.upi { background: #e0f2fe; color: #0369a1; }
+    .btn-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #faf8f5;
+      color: var(--ink);
+    }
+    .btn-row:hover {
+      background: #eee7db;
+    }
+    .btn-row.wa {
+      background: #25d366;
+      color: #fff;
+      border-color: #25d366;
+    }
+    .btn-row.wa:hover {
+      background: #1eb855;
+    }
+    .action-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    /* Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(3px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.show {
+      display: flex;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #f1ede4;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+    .order-detail-header {
+      border-bottom: 2px dashed var(--border);
+      padding-bottom: 18px;
+      margin-bottom: 20px;
+    }
+    .detail-section {
+      margin-bottom: 20px;
+    }
+    .detail-section h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .order-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    .order-items-table th, .order-items-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .status-select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      background: #fff;
+    }
+    /* Empty State */
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="admin-bar">
+    <div class="brand-wrap">
+      <div class="brand-logo">🌿</div>
+      <div class="brand-title">
+        SHUDDH SEVA
+        <small>ADMIN CONTROL PORTAL</small>
+      </div>
+    </div>
+    
+    <div class="admin-actions">
+      <div class="live-indicator">
+        <div class="pulse-dot"></div>
+        <span>Live Order Feed</span>
+      </div>
+      <a href="/" target="_blank" class="btn-top">View Live Store ↗</a>
+      <a href="/admin/logout" class="btn-top" style="background: rgba(197, 48, 48, 0.4);">Logout ⏻</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Stat Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon sales">💰</div>
+        <div class="stat-info">
+          <h3 id="statSales">₹0</h3>
+          <p>Total Revenue</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon orders">📦</div>
+        <div class="stat-info">
+          <h3 id="statOrders">0</h3>
+          <p>Total Orders</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon pending">⏳</div>
+        <div class="stat-info">
+          <h3 id="statPending">0</h3>
+          <p>Pending / New</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon delivered">🚚</div>
+        <div class="stat-info">
+          <h3 id="statDelivered">0</h3>
+          <p>Delivered</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon inquiries">✉️</div>
+        <div class="stat-info">
+          <h3 id="statInquiries">0</h3>
+          <p>Customer Inquiries</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <div class="tabs">
+        <button class="tab-btn active" data-filter="all">All Orders</button>
+        <button class="tab-btn" data-filter="New Order">New Orders</button>
+        <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
+        <button class="tab-btn" data-filter="Shipped">Shipped</button>
+        <button class="tab-btn" data-filter="Delivered">Delivered</button>
+        <button class="tab-btn" data-filter="Cancelled">Cancelled</button>
+        <button class="tab-btn" id="inquiriesTabBtn" style="border-left: 2px solid var(--border); margin-left: 8px;">Customer Inquiries</button>
+      </div>
+
+      <div class="search-wrap">
+        <input type="text" id="orderSearch" class="search-box" placeholder="Search customer, phone, order ID...">
+        <a href="/api/admin/export-orders" class="btn-action">
+          📥 Export CSV
+        </a>
+      </div>
+    </div>
+
+    <!-- Orders View -->
+    <div id="ordersView" class="table-card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID & Date</th>
+              <th>Customer</th>
+              <th>Location</th>
+              <th>Items</th>
+              <th>Amount & Payment</th>
+              <th>Order Status</th>
+              <th>Quick Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Inquiries View (hidden by default) -->
+    <div id="inquiriesView" class="table-card" style="display: none;">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Phone / WhatsApp</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Message</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="inquiriesTableBody">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Order Details Modal -->
+  <div class="modal-backdrop" id="orderModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeOrderModal()">×</button>
+      <div id="modalOrderContent"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentFilter = 'all';
+    let ordersData = [];
+    let inquiriesData = [];
+    let lastKnownOrderCount = 0;
+    let isViewingInquiries = false;
+
+    // Web Audio Synthesizer Chime for new order alert!
+    function playOrderChime() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.8);
+      } catch (e) {
+        console.log("Audio alert not triggered:", e);
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/admin/stats');
+        const data = await res.json();
+        document.getElementById('statSales').textContent = '₹' + Math.round(data.total_sales).toLocaleString('en-IN');
+        document.getElementById('statOrders').textContent = data.total_orders;
+        document.getElementById('statPending').textContent = data.pending_orders;
+        document.getElementById('statDelivered').textContent = data.delivered_orders;
+        document.getElementById('statInquiries').textContent = data.unread_inquiries;
+
+        // Check if there are new orders to trigger chime
+        if (lastKnownOrderCount > 0 && data.total_orders > lastKnownOrderCount) {
+          playOrderChime();
+        }
+        lastKnownOrderCount = data.total_orders;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadOrders() {
+      try {
+        const query = document.getElementById('orderSearch').value;
+        const res = await fetch(`/api/admin/orders?status=${currentFilter}&search=${encodeURIComponent(query)}`);
+        ordersData = await res.json();
+        renderOrdersTable();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderOrdersTable() {
+      const tbody = document.getElementById('ordersTableBody');
+      if (!ordersData.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">📦</div><h3>No orders found</h3><p>Incoming customer orders will appear here automatically.</p></div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = ordersData.map(o => {
+        const statusClass = (o.order_status || 'New Order').toLowerCase().replace(' ', '-');
+        const dateStr = new Date(o.created_at).toLocaleString('en-IN', {
+          day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+        });
+        
+        const itemsSummary = o.items.map(i => `${i.name} (${i.size}g) × ${i.qty}`).join('<br>');
+        
+        return `
+          <tr>
+            <td>
+              <div class="order-id">#${o.order_id}</div>
+              <small style="color:var(--muted)">${dateStr}</small>
+            </td>
+            <td>
+              <div class="customer-info">
+                <strong>${o.customer_name}</strong>
+                <small>📞 ${o.phone}</small>
+              </div>
+            </td>
+            <td>
+              <div>${o.city}, ${o.state}</div>
+              <small style="color:var(--muted)">PIN: ${o.pincode}</small>
+            </td>
+            <td style="font-size:12px; line-height: 1.4;">
+              ${itemsSummary}
+            </td>
+            <td>
+              <strong style="color:var(--primary); font-size:15px;">₹${Math.round(o.total_amount)}</strong>
+              <div><span class="badge ${o.payment_method === 'COD' ? 'cod' : 'upi'}">${o.payment_method}</span></div>
+            </td>
+            <td>
+              <select class="status-select" onchange="changeStatus('${o.order_id}', this.value)">
+                <option value="New Order" ${o.order_status === 'New Order' ? 'selected' : ''}>⏳ New Order</option>
+                <option value="Confirmed" ${o.order_status === 'Confirmed' ? 'selected' : ''}>✅ Confirmed</option>
+                <option value="Shipped" ${o.order_status === 'Shipped' ? 'selected' : ''}>🚚 Shipped</option>
+                <option value="Delivered" ${o.order_status === 'Delivered' ? 'selected' : ''}>🎉 Delivered</option>
+                <option value="Cancelled" ${o.order_status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
+              </select>
+            </td>
+            <td>
+              <div class="action-group">
+                <button class="btn-row" onclick="viewOrder('${o.order_id}')">👁 View</button>
+                <a class="btn-row wa" target="_blank" href="https://wa.me/91${o.whatsapp || o.phone}?text=${encodeURIComponent('Hello ' + o.customer_name + ', greetings from Shuddh Seva Foods! Regarding your order #' + o.order_id + ': your order is ' + o.order_status + '.')}">💬 WhatsApp</a>
+                <a class="btn-row" target="_blank" href="/admin/invoice/${o.order_id}">🖨 Bill</a>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function changeStatus(orderId, newStatus) {
+      try {
+        const res = await fetch(`/api/admin/order/${orderId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadStats();
+          loadOrders();
+        }
+      } catch (e) {
+        alert('Failed to update status');
+      }
+    }
+
+    function viewOrder(orderId) {
+      const o = ordersData.find(x => x.order_id === orderId);
+      if (!o) return;
+
+      const dateStr = new Date(o.created_at).toLocaleString('en-IN');
+      const itemsRows = o.items.map(i => `
+        <tr>
+          <td>${i.name}</td>
+          <td>${i.size}g</td>
+          <td>${i.qty}</td>
+          <td>₹${i.price}</td>
+          <td style="font-weight:700;">₹${i.price * i.qty}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('modalOrderContent').innerHTML = `
+        <div class="order-detail-header">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <h2 style="color:var(--primary); font-size:22px;">Order #${o.order_id}</h2>
+              <small style="color:var(--muted)">Placed on ${dateStr}</small>
+            </div>
+            <span class="badge ${o.payment_method === 'COD' ? 'cod' : 'upi'}">${o.payment_method}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Customer & Delivery Address</h4>
+          <p><strong>Name:</strong> ${o.customer_name}</p>
+          <p><strong>Phone:</strong> <a href="tel:${o.phone}">${o.phone}</a> | <strong>WhatsApp:</strong> <a href="https://wa.me/91${o.whatsapp || o.phone}" target="_blank">${o.whatsapp || o.phone}</a></p>
+          ${o.email ? `<p><strong>Email:</strong> ${o.email}</p>` : ''}
+          <p><strong>Full Address:</strong> ${o.address}${o.landmark ? ', Landmark: ' + o.landmark : ''}</p>
+          <p><strong>City / State:</strong> ${o.city}, ${o.state} - <b>PIN: ${o.pincode}</b></p>
+          ${o.notes ? `<p style="margin-top:8px; background:#fff9e6; padding:8px; border-radius:6px;"><strong>Customer Note:</strong> ${o.notes}</p>` : ''}
+        </div>
+
+        <div class="detail-section">
+          <h4>Order Items</h4>
+          <table class="order-items-table">
+            <thead>
+              <tr style="background:#faf8f5;">
+                <th>Item</th>
+                <th>Pack Size</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsRows}
+            </tbody>
+          </table>
+          <div style="text-align:right; margin-top:12px; font-size:14px;">
+            <p>Subtotal: ₹${o.subtotal}</p>
+            ${o.discount > 0 ? `<p style="color:var(--accent);">Discount: -₹${o.discount}</p>` : ''}
+            <p>Delivery Fee: ${o.delivery_fee == 0 ? '<span style="color:var(--accent)">FREE</span>' : '₹' + o.delivery_fee}</p>
+            <h3 style="color:var(--primary); margin-top:6px; font-size:20px;">Total: ₹${Math.round(o.total_amount)}</h3>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:24px;">
+          <a class="btn-action" target="_blank" href="/admin/invoice/${o.order_id}" style="flex:1; justify-content:center;">🖨 Print Invoice / Packing Slip</a>
+          <a class="btn-row wa" target="_blank" href="https://wa.me/91${o.whatsapp || o.phone}?text=${encodeURIComponent('Hello ' + o.customer_name + ', your Shuddh Seva Foods order #' + o.order_id + ' status: ' + o.order_status)}" style="padding:10px 16px;">💬 Chat on WhatsApp</a>
+        </div>
+      `;
+
+      document.getElementById('orderModal').classList.add('show');
+    }
+
+    function closeOrderModal() {
+      document.getElementById('orderModal').classList.remove('show');
+    }
+
+    async function loadInquiries() {
+      try {
+        const res = await fetch('/api/admin/inquiries');
+        inquiriesData = await res.json();
+        renderInquiriesTable();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderInquiriesTable() {
+      const tbody = document.getElementById('inquiriesTableBody');
+      if (!inquiriesData.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">✉️</div><h3>No customer inquiries yet</h3><p>Messages submitted through the contact form will appear here.</p></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = inquiriesData.map(m => `
+        <tr>
+          <td style="white-space:nowrap; color:var(--muted);">${new Date(m.created_at).toLocaleString('en-IN', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}</td>
+          <td><strong>${m.name}</strong></td>
+          <td><a href="tel:${m.phone}">${m.phone}</a></td>
+          <td>${m.email || '—'}</td>
+          <td><b>${m.subject || 'General'}</b></td>
+          <td style="max-width:320px; line-height:1.4;">${m.message}</td>
+          <td>
+            <a class="btn-row wa" target="_blank" href="https://wa.me/91${m.phone}?text=${encodeURIComponent('Hello ' + m.name + ', thank you for contacting Shuddh Seva Foods!')}">💬 Reply</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Tabs filter handling
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+
+        if (e.target.id === 'inquiriesTabBtn') {
+          document.getElementById('ordersView').style.display = 'none';
+          document.getElementById('inquiriesView').style.display = 'block';
+          isViewingInquiries = true;
+          loadInquiries();
+        } else {
+          document.getElementById('ordersView').style.display = 'block';
+          document.getElementById('inquiriesView').style.display = 'none';
+          isViewingInquiries = false;
+          currentFilter = e.target.dataset.filter;
+          loadOrders();
+        }
+      });
+    });
+
+    document.getElementById('orderSearch').addEventListener('input', () => {
+      if (!isViewingInquiries) loadOrders();
+    });
+
+    // Initial load and live auto-poll every 8 seconds
+    loadStats();
+    loadOrders();
+    setInterval(() => {
+      loadStats();
+      if (!isViewingInquiries) {
+        loadOrders();
+      } else {
+        loadInquiries();
+      }
+    }, 8000);
+  </script>
+</body>
+</html>
