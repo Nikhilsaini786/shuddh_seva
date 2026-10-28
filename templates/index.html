@@ -45,6 +45,11 @@
     </nav>
 
     <div class="header-right">
+      <!-- Language Switcher Pill -->
+      <button type="button" class="btn-lang-toggle" onclick="toggleLanguage()" id="langToggleBtn" style="background:#fff; border:1px solid #d5d9d9; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; color:var(--primary); display:inline-flex; align-items:center; gap:6px;">
+        🌐 <span id="langLabel">हिंदी</span>
+      </button>
+
       <!-- Customer OTP Auth Pill / Button (Amazon Style) -->
       <div id="userAuthContainer">
         {% if current_user %}
@@ -400,93 +405,100 @@
 
   <!-- ================= MODALS ================= -->
 
-  <!-- 1. Customer OTP Verification Modal (Amazon Style Signup & Login) -->
+  <!-- 1. Customer OTP Verification Modal (Option A: Mobile & Option B: Email) -->
   <div class="modal-overlay" id="authModal">
-    <div class="modal-dialog" style="max-width:380px; padding:24px 26px; border:1px solid #d5d9d9; border-radius:8px;">
+    <div class="modal-dialog" style="max-width:400px; padding:24px 26px; border:1px solid #d5d9d9; border-radius:12px; background:#fff;">
       <button type="button" class="modal-close-btn" onclick="closeAuthModal()">×</button>
       
       <div id="authReasonBox" class="auth-notice-banner" style="display:none; margin-bottom:14px;"></div>
 
       <div style="text-align:center; margin-bottom:16px;">
-        <div style="font-size:22px; font-weight:800; color:#111;">SHUDDH <span style="color:#e47911;">SEVA</span></div>
+        <div style="font-size:22px; font-weight:800; color:#4a210f;">SHUDDH <span style="color:#c8a34b;">SEVA</span></div>
         <small style="letter-spacing:2px; font-size:10px; color:#176b3b; font-weight:700;">FOODS • PURE & NATURAL</small>
       </div>
 
-      <!-- Step 1: Enter Phone Number -->
-      <div id="otpStepPhone">
-        <h2 style="font-size:24px; font-weight:400; margin-bottom:14px; color:#0f1111;">Sign in or create account</h2>
+      <!-- Step 1: Send OTP with Option A / Option B tabs -->
+      <div id="otpStepSend">
+        <h2 style="font-size:20px; font-weight:700; margin-bottom:12px; color:#0f1111;">Sign In or Register</h2>
+
+        <div style="display:flex; border-bottom:2px solid #e7e7e7; margin-bottom:16px;">
+          <button type="button" id="modalTabPhone" onclick="switchModalAuthTab('phone')" style="flex:1; padding:8px 6px; font-size:12px; font-weight:700; border:none; border-bottom:3px solid #e47911; background:none; cursor:pointer; color:#4a210f;">
+            📱 Mobile OTP
+          </button>
+          <button type="button" id="modalTabEmail" onclick="switchModalAuthTab('email')" style="flex:1; padding:8px 6px; font-size:12px; font-weight:700; border:none; border-bottom:3px solid transparent; background:none; cursor:pointer; color:#767676;">
+            ✉️ Email OTP
+          </button>
+        </div>
+
+        <div id="modalAlertBox" style="display:none; padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:12px;"></div>
+
         <form onsubmit="handleSendOtp(event)">
-          <div class="form-group" style="margin-bottom:14px;">
-            <label style="font-weight:700; font-size:13px; display:block; margin-bottom:4px;">Enter mobile number</label>
+          <!-- Mobile Input -->
+          <div id="modalGroupPhone" class="form-group" style="margin-bottom:14px;">
+            <label style="font-weight:700; font-size:13px; display:block; margin-bottom:4px;">Indian Mobile Number</label>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span style="background:#f0f2f2; border:1px solid #888c8c; border-radius:4px; height:31px; padding:0 10px; font-weight:700; font-size:13px; display:flex; align-items:center;">IN +91</span>
-              <input type="tel" id="otpPhoneInput" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required autofocus style="flex:1; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:14px; font-weight:600; outline:none;">
+              <span style="background:#f0f2f2; border:1px solid #888c8c; border-radius:4px; height:36px; padding:0 10px; font-weight:700; font-size:13px; display:flex; align-items:center;">IN +91</span>
+              <input type="tel" id="otpPhoneInput" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" autofocus style="flex:1; height:36px; border:1px solid #888c8c; border-radius:4px; padding:3px 10px; font-size:14px; font-weight:600; outline:none;">
             </div>
+            <small style="font-size:11px; color:#666; margin-top:4px; display:block;">Real 6-digit OTP will be sent via SMS.</small>
           </div>
 
-          <button type="submit" id="sendOtpBtn" style="width:100%; height:31px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111;">
-            Continue
+          <!-- Email Input -->
+          <div id="modalGroupEmail" class="form-group" style="display:none; margin-bottom:14px;">
+            <label style="font-weight:700; font-size:13px; display:block; margin-bottom:4px;">Email Address</label>
+            <input type="email" id="otpEmailInput" placeholder="name@example.com" style="width:100%; height:36px; border:1px solid #888c8c; border-radius:4px; padding:3px 10px; font-size:14px; font-weight:600; outline:none;">
+            <small style="font-size:11px; color:#666; margin-top:4px; display:block;">Real 6-digit OTP will be sent to your Gmail/Email inbox.</small>
+          </div>
+
+          <button type="submit" id="sendOtpBtn" style="width:100%; height:36px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111;">
+            Send OTP
           </button>
 
-          <p style="font-size:11px; color:#565959; margin-top:16px; line-height:1.5;">
-            By continuing, you agree to Shuddh Seva Foods' <a href="#" style="color:#007185; text-decoration:none;">Conditions of Use</a> and <a href="#" style="color:#007185; text-decoration:none;">Privacy Notice</a>.
+          <p style="font-size:11px; color:#565959; margin-top:14px; line-height:1.5;">
+            By continuing, you agree to Shuddh Seva Foods' <a href="#" style="color:#007185; text-decoration:none;">Conditions of Use</a>.
           </p>
 
-          <div style="margin-top:16px; border-top:1px solid #e7e7e7; padding-top:12px; text-align:center;">
-            <a href="/login" style="color:#007185; text-decoration:none; font-size:12px;">
-              Open Full Screen Sign-In Page ▸
+          <div style="margin-top:14px; border-top:1px solid #e7e7e7; padding-top:10px; text-align:center;">
+            <a href="/login" style="color:#007185; text-decoration:none; font-size:12px; font-weight:600;">
+              Open Dedicated Sign-In Page ▸
             </a>
           </div>
         </form>
       </div>
 
-      <!-- Step 2: Enter OTP & Complete Profile if New -->
+      <!-- Step 2: Enter 6-digit OTP -->
       <div id="otpStepVerify" style="display:none;">
-        <h2 style="font-size:22px; font-weight:400; margin-bottom:10px; color:#0f1111;" id="verifyOtpHeading">Verification required</h2>
+        <h2 style="font-size:20px; font-weight:700; margin-bottom:8px; color:#0f1111;" id="verifyOtpHeading">Verification Required</h2>
         <p style="font-size:12px; margin-bottom:12px; color:#0f1111;">
-          We've sent a One Time Password (OTP) to <b id="displayTargetPhone">+91 XXXXXXXXXX</b> 
+          We've sent a 6-digit OTP to <b id="displayTargetPhone" style="color:#4a210f;">---</b> 
           (<a href="#" onclick="resetOtpForm(); return false;" style="color:#007185; text-decoration:none;">Change</a>)
         </p>
 
-        <!-- Simulated Live OTP Alert Box -->
-        <div class="otp-box-live" id="otpLiveCodeBox" style="background:#f4fbf5; border:1px solid #b7ebc2; padding:10px; border-radius:6px; margin-bottom:14px; text-align:center;">
-          <div style="font-size:11.5px; font-weight:600; color:#1b5e20;">📲 SMS OTP received on phone:</div>
-          <div class="otp-code-highlight" id="otpCodeDisplay" style="font-size:20px; font-weight:800; letter-spacing:6px; background:#fff; border:1px solid #81c784; padding:2px 10px; border-radius:4px; display:inline-block; margin:4px 0;">----</div>
-          <div style="font-size:11px; color:#555;">(Enter this 4-digit code below)</div>
-        </div>
+        <div id="modalVerifyAlertBox" style="display:none; padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:12px;"></div>
 
         <form onsubmit="handleVerifyOtp(event)">
           <div class="form-group" style="margin-bottom:12px;">
             <label style="font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:4px;">
-              <span>Enter OTP</span>
+              <span>Enter 6-digit OTP</span>
               <a href="#" id="resendOtpBtn" onclick="handleSendOtp(event)" style="color:#007185; font-size:11px; text-decoration:none;">
                 Resend OTP <span id="resendTimer"></span>
               </a>
             </label>
-            <input type="text" id="otpDigitInput" class="otp-digit-input" placeholder="••••" maxlength="4" pattern="[0-9]{4}" required autofocus style="height:38px; font-size:20px; letter-spacing:6px; text-align:center; font-weight:800; border:1px solid #888c8c; border-radius:4px; width:100%;">
+            <input type="text" id="otpDigitInput" class="otp-digit-input" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" required autofocus style="height:44px; font-size:22px; letter-spacing:8px; text-align:center; font-weight:800; font-family:monospace; border:1px solid #888c8c; border-radius:6px; width:100%;">
           </div>
 
           <!-- New User Additional Details (shown only if first-time user) -->
           <div id="newUserFields" style="display:none; border-top:1px solid #e7e7e7; padding-top:12px; margin-top:12px;">
-            <h4 style="font-size:13px; color:#0f1111; margin-bottom:10px; font-weight:700;">
-              Your Information:
+            <h4 style="font-size:13px; color:#0f1111; margin-bottom:8px; font-weight:700;">
+              Your Name (For new signup):
             </h4>
             <div class="form-group" style="margin-bottom:10px;">
-              <label style="font-size:12px; font-weight:700; margin-bottom:3px; display:block;">Your Name *</label>
-              <input type="text" id="newUserName" placeholder="First and last name" style="width:100%; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:13px;">
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-              <label style="font-size:12px; font-weight:700; margin-bottom:3px; display:block;">Delivery Address (Optional)</label>
-              <input type="text" id="newUserAddress" placeholder="House no, Street address" style="width:100%; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:13px;">
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-              <label style="font-size:12px; font-weight:700; margin-bottom:3px; display:block;">PIN Code (Optional)</label>
-              <input type="text" id="newUserPincode" placeholder="6-digit PIN" pattern="[0-9]{6}" style="width:100%; height:31px; border:1px solid #888c8c; border-radius:4px; padding:3px 8px; font-size:13px;">
+              <input type="text" id="newUserName" placeholder="First and last name" style="width:100%; height:34px; border:1px solid #888c8c; border-radius:4px; padding:3px 10px; font-size:13px;">
             </div>
           </div>
 
-          <button type="submit" id="verifyOtpBtn" style="width:100%; height:31px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111; margin-top:8px;">
-            Continue
+          <button type="submit" id="verifyOtpBtn" style="width:100%; height:36px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111; margin-top:8px;">
+            Verify & Continue
           </button>
         </form>
       </div>

@@ -123,6 +123,124 @@ function prefillCustomerForm() {
   if (pinInput && !pinInput.value) pinInput.value = currentUser.pincode || '';
 }
 
+// Current auth mode in modal ('phone' or 'email')
+let modalAuthChannel = 'phone';
+let modalAuthTarget = '';
+
+// Language state
+let currentLang = localStorage.getItem('shuddh_seva_lang') || 'en';
+
+const i18n = {
+  en: {
+    langBtn: 'हिंदी',
+    navHome: 'Home',
+    navSpices: 'Pure Spices',
+    navPurity: 'Purity Promise',
+    navReviews: 'Customer Reviews',
+    navContact: 'Contact & Help',
+    heroTag: '🌿 100% PURE & NATURAL SPICES',
+    heroTitle: 'Authentic Spices For A<br><span>Healthier Everyday Life</span>',
+    heroSlogan: '"हमारा देश से, शुद्धता का वादा • सेहत का साथ"',
+    shopNow: 'Shop Pure Spices Now ↓',
+    explorePurity: 'Explore Purity Promise →',
+    trackOrder: '🔍 Track Order',
+    cart: '🛒 Cart',
+    helloSignIn: 'Hello, sign in',
+    accountLists: 'Account & Lists ▾',
+    yourOrders: '📦 Your Orders',
+    signOut: '⏻ Sign Out'
+  },
+  hi: {
+    langBtn: 'English',
+    navHome: 'मुख्य पृष्ठ',
+    navSpices: 'शुद्ध मसाले',
+    navPurity: 'शुद्धता का वादा',
+    navReviews: 'ग्राहक समीक्षा',
+    navContact: 'संपर्क करें',
+    heroTag: '🌿 100% शुद्ध और प्राकृतिक मसाले',
+    heroTitle: 'सेहतमंद और खुशहाल जीवन के लिए<br><span>असली शुद्ध भारतीय मसाले</span>',
+    heroSlogan: '"हमारा देश से, शुद्धता का वादा • सेहत का साथ"',
+    shopNow: 'शुद्ध मसाले अभी खरीदें ↓',
+    explorePurity: 'शुद्धता का वादा देखें →',
+    trackOrder: '🔍 ऑर्डर ट्रैक करें',
+    cart: '🛒 कार्ट',
+    helloSignIn: 'नमस्ते, लॉगिन करें',
+    accountLists: 'खाता और सूचियाँ ▾',
+    yourOrders: '📦 आपके ऑर्डर्स',
+    signOut: '⏻ लॉगआउट'
+  }
+};
+
+function toggleLanguage() {
+  currentLang = (currentLang === 'en') ? 'hi' : 'en';
+  localStorage.setItem('shuddh_seva_lang', currentLang);
+  applyLanguage(currentLang);
+}
+
+function applyLanguage(lang) {
+  const t = i18n[lang] || i18n.en;
+  const langLabel = document.getElementById('langLabel');
+  if (langLabel) langLabel.textContent = t.langBtn;
+
+  // Nav links
+  const navLinks = document.querySelectorAll('.nav-links a');
+  if (navLinks.length >= 5) {
+    navLinks[0].textContent = t.navHome;
+    navLinks[1].textContent = t.navSpices;
+    navLinks[2].textContent = t.navPurity;
+    navLinks[3].textContent = t.navReviews;
+    navLinks[4].textContent = t.navContact;
+  }
+
+  // Hero elements
+  const heroTag = document.querySelector('.hero-tag');
+  if (heroTag) heroTag.textContent = t.heroTag;
+
+  const heroHeading = document.querySelector('.hero-text h2');
+  if (heroHeading) heroHeading.innerHTML = t.heroTitle;
+
+  const heroCta = document.querySelector('.hero-btns .btn-cta');
+  if (heroCta) heroCta.textContent = t.shopNow;
+
+  const heroSec = document.querySelector('.hero-btns .btn-secondary');
+  if (heroSec) heroSec.textContent = t.explorePurity;
+
+  // Track button
+  const trackBtn = document.querySelector('.btn-track');
+  if (trackBtn) trackBtn.textContent = t.trackOrder;
+
+  renderUserAuthNav();
+  renderProducts();
+}
+
+function switchModalAuthTab(channel) {
+  modalAuthChannel = channel;
+  const tabPhone = document.getElementById('modalTabPhone');
+  const tabEmail = document.getElementById('modalTabEmail');
+  const groupPhone = document.getElementById('modalGroupPhone');
+  const groupEmail = document.getElementById('modalGroupEmail');
+  const alertBox = document.getElementById('modalAlertBox');
+
+  if (alertBox) {
+    alertBox.style.display = 'none';
+    alertBox.innerHTML = '';
+  }
+
+  if (channel === 'phone') {
+    if (tabPhone) { tabPhone.style.borderBottomColor = '#e47911'; tabPhone.style.color = '#4a210f'; }
+    if (tabEmail) { tabEmail.style.borderBottomColor = 'transparent'; tabEmail.style.color = '#767676'; }
+    if (groupPhone) groupPhone.style.display = 'block';
+    if (groupEmail) groupEmail.style.display = 'none';
+    document.getElementById('otpPhoneInput')?.focus();
+  } else {
+    if (tabEmail) { tabEmail.style.borderBottomColor = '#e47911'; tabEmail.style.color = '#4a210f'; }
+    if (tabPhone) { tabPhone.style.borderBottomColor = 'transparent'; tabPhone.style.color = '#767676'; }
+    if (groupPhone) groupPhone.style.display = 'none';
+    if (groupEmail) groupEmail.style.display = 'block';
+    document.getElementById('otpEmailInput')?.focus();
+  }
+}
+
 function openAuthModal(reasonText = '') {
   resetOtpForm();
   const reasonBox = document.getElementById('authReasonBox');
@@ -143,23 +261,47 @@ function closeAuthModal() {
 }
 
 function resetOtpForm() {
-  document.getElementById('otpStepPhone').style.display = 'block';
+  document.getElementById('otpStepSend').style.display = 'block';
   document.getElementById('otpStepVerify').style.display = 'none';
-  document.getElementById('otpPhoneInput').value = '';
-  document.getElementById('otpDigitInput').value = '';
-  document.getElementById('otpLiveCodeBox').style.display = 'none';
+  const pInput = document.getElementById('otpPhoneInput');
+  const eInput = document.getElementById('otpEmailInput');
+  const dInput = document.getElementById('otpDigitInput');
+  if (pInput) pInput.value = '';
+  if (eInput) eInput.value = '';
+  if (dInput) dInput.value = '';
+
+  const alert1 = document.getElementById('modalAlertBox');
+  const alert2 = document.getElementById('modalVerifyAlertBox');
+  if (alert1) alert1.style.display = 'none';
+  if (alert2) alert2.style.display = 'none';
+
   clearInterval(resendTimerInterval);
 }
 
 // Step 1: Send OTP
 async function handleSendOtp(e) {
-  e.preventDefault();
-  const phone = document.getElementById('otpPhoneInput').value.trim();
-  if (phone.length !== 10) {
-    alert('Please enter a valid 10-digit mobile number.');
-    return;
+  if (e) e.preventDefault();
+  const alertBox = document.getElementById('modalAlertBox');
+  if (alertBox) alertBox.style.display = 'none';
+
+  let targetVal = '';
+  if (modalAuthChannel === 'phone') {
+    targetVal = (document.getElementById('otpPhoneInput')?.value || '').trim();
+    targetVal = targetVal.replace(/\D/g, '');
+    if (targetVal.length > 10 && targetVal.startsWith('91')) targetVal = targetVal.slice(-10);
+    if (targetVal.length !== 10) {
+      alert('Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+  } else {
+    targetVal = (document.getElementById('otpEmailInput')?.value || '').trim();
+    if (!targetVal || !targetVal.includes('@') || !targetVal.includes('.')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
   }
 
+  modalAuthTarget = targetVal;
   const btn = document.getElementById('sendOtpBtn');
   btn.disabled = true;
   btn.textContent = 'Sending OTP...';
@@ -168,83 +310,102 @@ async function handleSendOtp(e) {
     const res = await fetch('/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone })
+      body: JSON.stringify({
+        target: modalAuthTarget,
+        type: modalAuthChannel
+      })
     });
     const data = await res.json();
 
     if (data.success) {
-      otpTargetPhone = data.phone;
       isTargetExistingUser = data.is_existing;
 
       // Transition to Step 2
-      document.getElementById('otpStepPhone').style.display = 'none';
+      document.getElementById('otpStepSend').style.display = 'none';
       document.getElementById('otpStepVerify').style.display = 'block';
-      document.getElementById('displayTargetPhone').textContent = `+91 ${otpTargetPhone}`;
+      document.getElementById('displayTargetPhone').textContent = data.target_masked || modalAuthTarget;
 
       // Show/hide new user fields
       const newFields = document.getElementById('newUserFields');
       if (isTargetExistingUser) {
-        newFields.style.display = 'none';
+        if (newFields) newFields.style.display = 'none';
         document.getElementById('verifyOtpHeading').textContent = `Welcome back, ${data.user_name || 'Customer'}!`;
       } else {
-        newFields.style.display = 'block';
+        if (newFields) newFields.style.display = 'block';
         document.getElementById('verifyOtpHeading').textContent = 'Enter OTP & Details to Complete Signup';
       }
 
-      // Display live test OTP code on screen
-      if (data.otp_code) {
-        document.getElementById('otpCodeDisplay').textContent = data.otp_code;
-        document.getElementById('otpLiveCodeBox').style.display = 'block';
+      const vAlert = document.getElementById('modalVerifyAlertBox');
+      if (vAlert) {
+        vAlert.style.display = 'block';
+        vAlert.style.background = '#f0fdf4';
+        vAlert.style.border = '1px solid #86efac';
+        vAlert.style.color = '#166534';
+        vAlert.textContent = `✓ ${data.message}`;
       }
 
       startResendCountdown();
     } else {
-      alert(data.error || 'Failed to send OTP.');
+      if (data.provider_unconfigured) {
+        if (alertBox) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#f0f9ff';
+          alertBox.style.border = '1px solid #bae6fd';
+          alertBox.style.color = '#0369a1';
+          alertBox.innerHTML = `⚙️ <b>Provider Notice:</b> ${data.error}`;
+        } else {
+          alert(`Provider Notice: ${data.error}`);
+        }
+      } else {
+        alert(data.error || 'Failed to send OTP.');
+      }
     }
   } catch (err) {
-    alert('Network error sending OTP. Please check connection.');
+    alert('Network error sending OTP. Please check your connection.');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Send OTP (ओटीपी भेजें) →';
+    btn.textContent = 'Send OTP';
   }
 }
 
 function startResendCountdown() {
-  let seconds = 30;
+  let seconds = 45;
   const resendBtn = document.getElementById('resendOtpBtn');
   const timerSpan = document.getElementById('resendTimer');
-  resendBtn.style.pointerEvents = 'none';
-  resendBtn.style.opacity = '0.5';
+  if (resendBtn) {
+    resendBtn.style.pointerEvents = 'none';
+    resendBtn.style.color = '#767676';
+  }
 
   clearInterval(resendTimerInterval);
   resendTimerInterval = setInterval(() => {
     seconds--;
     if (seconds > 0) {
-      timerSpan.textContent = `(${seconds}s)`;
+      if (timerSpan) timerSpan.textContent = `(${seconds}s)`;
     } else {
       clearInterval(resendTimerInterval);
-      timerSpan.textContent = '';
-      resendBtn.style.pointerEvents = 'auto';
-      resendBtn.style.opacity = '1';
+      if (timerSpan) timerSpan.textContent = '';
+      if (resendBtn) {
+        resendBtn.style.pointerEvents = 'auto';
+        resendBtn.style.color = '#007185';
+      }
     }
   }, 1000);
 }
 
 // Step 2: Verify OTP & Login/Signup
 async function handleVerifyOtp(e) {
-  e.preventDefault();
+  if (e) e.preventDefault();
   const otpCode = document.getElementById('otpDigitInput').value.trim();
   const name = document.getElementById('newUserName')?.value.trim() || '';
-  const address = document.getElementById('newUserAddress')?.value.trim() || '';
-  const pincode = document.getElementById('newUserPincode')?.value.trim() || '';
 
-  if (otpCode.length !== 4) {
-    alert('Please enter the 4-digit OTP code.');
+  if (otpCode.length !== 6 || !/^\d+$/.test(otpCode)) {
+    alert('Please enter the 6-digit numeric OTP code.');
     return;
   }
 
   if (!isTargetExistingUser && !name) {
-    alert('Please enter your Full Name.');
+    alert('Please enter your Full Name to complete signup.');
     return;
   }
 
@@ -257,11 +418,10 @@ async function handleVerifyOtp(e) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        phone: otpTargetPhone,
+        target: modalAuthTarget,
+        type: modalAuthChannel,
         otp_code: otpCode,
-        name: name,
-        address: address,
-        pincode: pincode
+        name: name
       })
     });
     const data = await res.json();
@@ -284,7 +444,7 @@ async function handleVerifyOtp(e) {
     alert('Network error verifying OTP.');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Verify & Continue →';
+    btn.textContent = 'Verify & Continue';
   }
 }
 
@@ -995,6 +1155,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   updateCartBadge();
   checkAuthStatus();
+  if (currentLang && currentLang !== 'en') {
+    applyLanguage(currentLang);
+  }
 
   document.getElementById('searchInput')?.addEventListener('input', renderProducts);
   document.getElementById('categoryFilter')?.addEventListener('change', renderProducts);
