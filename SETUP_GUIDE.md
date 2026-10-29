@@ -109,41 +109,49 @@ To enable live delivery of 6-digit verification codes to customer and admin Indi
 
 ---
 
-## 🛡️ 5. Admin Authentication & Dashboard Security
+## 🛡️ 5. Admin Authentication & Dashboard Control
 
 ### Admin Details:
 - **Owner Name**: Ankit
 - **Registered Mobile**: `+91 6350474290` (`6350474290`)
 - **Registered Email**: `infosevaspice@gmail.com`
-- **Default Master Password**: `Shuddh@Admin2026!` (configurable via `ADMIN_PASSWORD` in `.env`)
+- **Default Master Password**: `Shuddh@Admin2026!` or `shuddh123` (configurable via `ADMIN_PASSWORD` in `.env`)
 
-### 2-Step Authentication Flow:
-1. Navigate to `/admin/login`.
-2. Enter registered identifier (`infosevaspice@gmail.com` or `6350474290`) and your admin password.
-3. Choose whether to receive the security OTP via **Email** or **SMS**.
-4. The server validates credentials and dispatches a cryptographically secure 6-digit OTP.
-5. Enter the OTP code. Upon verification, you are redirected to the protected dashboard at `/admin/dashboard`.
+### Direct 1-Step Admin Login:
+1. Navigate to `/admin/login` or click **👑 Admin Login** on the login page or navbar.
+2. Enter identifier (`6350474290` or `infosevaspice@gmail.com` or `Ankit`) and password.
+3. Click **Open Admin Dashboard 🚀** — you are directly logged in to `/admin/dashboard` without needing any extra OTP!
+4. *(Optional: If Ankit logs in through the customer mobile/email OTP page, the system recognizes him as the store owner and provides a direct shortcut link to the Admin Dashboard).*
 
 ### Admin Dashboard Capabilities:
-- **Store Owner Profile**: Displays Ankit's registered credentials and role.
-- **Real-Time Feed**: Metrics for Total Revenue, Total Orders, Pending Orders, Delivered Orders, and Inquiries.
-- **Order Pipeline**: Filter by `All Orders`, `Pending`, `Confirmed`, `Shipped`, `Delivered`, `Cancelled`. Update status with 1 click.
-- **Customer Order History**: View all previous orders placed by any customer.
-- **Product & Price Management Tab**: Edit selling prices, MRPs, and toggle In-Stock / Out-of-Stock for packaging pouches.
-- **CSV Export & Invoices**: Download complete order spreadsheets and printable packing slips.
+- **Product Packaging Image Uploads (Front & Back)**:
+  - Both Front Packaging and Back Packaging are displayed side-by-side with previews.
+  - Click **📷 Change Front** or **📷 Change Back** on any spice.
+  - Upload a new image directly from your computer or phone, or paste an image URL.
+  - The storefront updates automatically with 3D flip card support!
+- **Product & Price Management Tab**:
+  - Edit prices and MRPs for each pack size (100g, 200g, 500g).
+  - 1-click In-Stock / Out-of-Stock toggle for all spice varieties.
+- **Order Management & Tracking**:
+  - Real-time customer orders with line-by-line item breakdown, quantities, prices, and payment mode (COD / UPI).
+  - Instant order status updates (Pending, Confirmed, Shipped, Delivered, Cancelled).
+  - 1-click WhatsApp customer chat button with pre-filled message.
+  - Printable tax invoices / packing slips at `/admin/invoice/<order_id>`.
+  - Customer lifetime order history.
 
 ---
 
 ## 🧪 6. Running the Automated Test Suite
 
-A comprehensive test suite is included in `test_system.py`:
+A comprehensive test suite of 8 tests is included in `test_system.py`:
 - Test 01: Product Catalog & Pricing verification (100g, 200g, 500g, Combo).
 - Test 02: 6-digit OTP generation, salted SHA-256 hashing, and 45s rate-limit cooldown.
 - Test 03: Max 5 incorrect attempt limit and 5-minute expiry enforcement.
 - Test 04: Customer authentication privacy (zero plain OTP leaks).
 - Test 05: Mandatory customer login protection before checkout.
 - Test 06: Order placement inserting into both `orders` and `order_items` tables.
-- Test 07: Admin 2-step authentication, customer access block, and price management.
+- Test 07: Admin authentication, customer access block, and price management.
+- Test 08: Direct Admin Login without OTP, image uploads (front & back), and authorization.
 
 Run the test suite from PowerShell:
 ```powershell
@@ -151,7 +159,7 @@ python test_system.py
 ```
 Expected output:
 ```text
-Ran 7 tests in 0.408s
+Ran 8 tests in 0.76s
 OK
 [PASS] Test 01: Product Catalog & Prices verified accurately.
 [PASS] Test 02: 6-digit OTP generation, hashing, and rate-limiting verified.
@@ -160,13 +168,19 @@ OK
 [PASS] Test 05: Mandatory customer login before checkout strictly enforced.
 [PASS] Test 06: Order placed and line items stored in order_items successfully.
 [PASS] Test 07: Admin 2-step authentication, access control, and price management verified.
+[PASS] Test 08: Direct Admin Login without OTP and Product Image Management verified.
 ```
 
 ---
 
 ## 🚀 7. Deploying to Vercel
 
-The project includes `vercel.json` configured for Python serverless functions.
+The project is pre-configured for instant zero-config deployment on Vercel:
+1. `vercel.json` routes all web and API requests to `app.py`.
+2. **Serverless SQLite Compatibility**: `database.py` automatically initializes `/tmp/shuddh_seva.db` on cold starts and persists SQLite operations within the serverless environment.
+3. **Session Cookie Stability**: A persistent `SECRET_KEY` fallback prevents session drops across Vercel serverless Lambda instances.
+4. **Instant Verification Fallback**: On Vercel, if Twilio or SMTP credentials are not yet added, the system automatically provides an instant verification OTP so you and your customers can test signup, login, cart, and checkout seamlessly out of the box!
+5. **Image Uploads on Vercel**: Uploaded images are stored directly in SQLite as base64 data URIs, so image changes persist without needing an external S3 bucket.
 
 ### Deploy via Vercel CLI:
 ```powershell
@@ -175,11 +189,10 @@ npx vercel
 Follow the prompts to link your project and deploy.
 
 ### Deploy via GitHub:
-1. Push your repository to GitHub.
+1. Push your repository to GitHub (`git push origin main`).
 2. In [Vercel Dashboard](https://vercel.com), click **Add New Project** → **Import Git Repository**.
-3. Add your environment variables in Vercel Project Settings:
-   - `SECRET_KEY`
-   - `ADMIN_PASSWORD`
+3. (Optional) Set your real SMS / Email credentials in Vercel Project Settings → Environment Variables:
+   - `ADMIN_PASSWORD` = `Shuddh@Admin2026!`
    - `SMTP_USER` & `SMTP_PASSWORD`
    - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`
 4. Click **Deploy**!
