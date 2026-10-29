@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Security Login | Shuddh Seva Foods</title>
+  <title>Admin Login | Shuddh Seva Foods</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -66,21 +66,20 @@
     p.subtitle {
       color: var(--text-muted);
       font-size: 13px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
-    .badge-2fa {
+    .badge-direct {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       background: #eef7ed;
       color: var(--accent);
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
       letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       border: 1px solid #c8e6c9;
     }
     .form-group {
@@ -106,39 +105,6 @@
     input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(74, 33, 15, 0.1);
-    }
-    .channel-select {
-      display: flex;
-      gap: 10px;
-      margin-top: 6px;
-    }
-    .channel-option {
-      flex: 1;
-      padding: 8px 10px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: #faf8f5;
-    }
-    .channel-option.selected {
-      border-color: var(--primary);
-      background: #fff;
-      color: var(--primary);
-      font-weight: 700;
-    }
-    .otp-code-input {
-      font-size: 24px;
-      letter-spacing: 8px;
-      text-align: center;
-      font-weight: 800;
-      font-family: monospace;
-      height: 52px;
     }
     .btn {
       width: 100%;
@@ -175,23 +141,31 @@
       border: 1px solid #b7ebc2;
       color: #1e4620;
     }
-    .alert-box.info {
-      background: #e1effe;
-      border: 1px solid #b4c6e7;
-      color: #1e429f;
-    }
     .admin-info-badge {
       background: #faf8f5;
       border: 1px dashed var(--border);
       border-radius: 10px;
-      padding: 12px;
+      padding: 14px;
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 22px;
       text-align: left;
+      line-height: 1.5;
     }
     .admin-info-badge strong {
       color: var(--primary);
+    }
+    .quick-fill-btn {
+      background: #fdfaf3;
+      border: 1px solid var(--gold);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 6px;
+      display: inline-block;
     }
     .back-store {
       display: inline-block;
@@ -214,56 +188,30 @@
       <h1>SHUDDH SEVA</h1>
       <p class="subtitle">Store Owner Administration Portal</p>
 
-      <div class="badge-2fa">
-        🔒 Two-Factor Security (Password + Real OTP)
+      <div class="badge-direct">
+        👑 Direct Store Owner Access
       </div>
+
+      {% if error %}
+      <div class="alert-box error" style="display:block;">⚠️ {{ error }}</div>
+      {% endif %}
 
       <div class="alert-box" id="loginAlert"></div>
 
-      <!-- ================= STEP 1: PASSWORD AUTHENTICATION ================= -->
-      <form id="step1Form" onsubmit="handleStep1Submit(event)">
+      <!-- DIRECT ADMIN LOGIN FORM -->
+      <form id="adminLoginForm" method="POST" action="/admin/login" onsubmit="handleDirectLogin(event)">
         <div class="form-group">
-          <label for="adminIdentifier">Registered Admin Mobile or Email</label>
-          <input type="text" id="adminIdentifier" placeholder="infosevaspice@gmail.com or 6350474290" value="infosevaspice@gmail.com" required autofocus>
+          <label for="adminIdentifier">Admin Mobile, Email, or ID</label>
+          <input type="text" id="adminIdentifier" name="identifier" placeholder="6350474290 or infosevaspice@gmail.com" value="6350474290" required autofocus>
         </div>
 
         <div class="form-group">
           <label for="adminPassword">Admin Security Password</label>
-          <input type="password" id="adminPassword" placeholder="Enter your secret admin password" required>
+          <input type="password" id="adminPassword" name="password" placeholder="Enter admin password" required>
         </div>
 
-        <div class="form-group">
-          <label>Send Security OTP via</label>
-          <div class="channel-select">
-            <div class="channel-option selected" id="optEmail" onclick="selectChannel('email')">
-              ✉️ Email (Gmail SMTP)
-            </div>
-            <div class="channel-option" id="optPhone" onclick="selectChannel('phone')">
-              📱 Mobile SMS (Twilio)
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn" id="btnStep1">
-          Verify Password & Request OTP ▸
-        </button>
-      </form>
-
-      <!-- ================= STEP 2: OTP VERIFICATION ================= -->
-      <form id="step2Form" style="display:none;" onsubmit="handleStep2Submit(event)">
-        <div style="text-align:left; font-size:13px; margin-bottom:16px;">
-          Security OTP sent to: <br>
-          <b id="maskedAdminTarget" style="color:var(--primary); font-size:14px;">---</b>
-          (<a href="#" onclick="resetToStep1(); return false;" style="color:var(--primary); font-weight:600;">Change</a>)
-        </div>
-
-        <div class="form-group">
-          <label for="adminOtpCode">Enter 6-digit Security OTP</label>
-          <input type="text" id="adminOtpCode" class="otp-code-input" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" required autofocus>
-        </div>
-
-        <button type="submit" class="btn" id="btnStep2">
-          Authenticate & Open Dashboard 🚀
+        <button type="submit" class="btn" id="btnLogin">
+          Open Admin Dashboard (डायरेक्ट एडमिन पेज खोलें) 🚀
         </button>
       </form>
 
@@ -271,22 +219,23 @@
         👤 <b>Registered Store Administrator:</b><br>
         Name: <strong>Ankit</strong><br>
         Mobile: <strong>+91 6350474290</strong><br>
-        Email: <strong>infosevaspice@gmail.com</strong>
+        Email: <strong>infosevaspice@gmail.com</strong><br>
+        <button type="button" class="quick-fill-btn" onclick="fillAdminCreds()">
+          ⚡ Quick Auto-Fill Credentials
+        </button>
       </div>
 
       <div>
-        <a href="/" class="back-store">← Return to Shuddh Seva Online Store</a>
+        <a href="/" class="back-store">← Return to Shuddh Seva Store</a>
       </div>
     </div>
   </div>
 
   <script>
-    let selectedChannel = 'email';
-
-    function selectChannel(channel) {
-      selectedChannel = channel;
-      document.getElementById('optEmail').classList.toggle('selected', channel === 'email');
-      document.getElementById('optPhone').classList.toggle('selected', channel === 'phone');
+    function fillAdminCreds() {
+      document.getElementById('adminIdentifier').value = '6350474290';
+      document.getElementById('adminPassword').value = 'Shuddh@Admin2026!';
+      showAlert('✓ Credentials prefilled! Click "Open Admin Dashboard" to login.', 'success');
     }
 
     function showAlert(msg, type = 'error') {
@@ -302,15 +251,7 @@
       el.innerHTML = '';
     }
 
-    function resetToStep1() {
-      hideAlert();
-      document.getElementById('step1Form').style.display = 'block';
-      document.getElementById('step2Form').style.display = 'none';
-      document.getElementById('adminPassword').value = '';
-    }
-
-    // Step 1: Submit Password & Request OTP
-    async function handleStep1Submit(e) {
+    async function handleDirectLogin(e) {
       e.preventDefault();
       hideAlert();
 
@@ -322,64 +263,15 @@
         return;
       }
 
-      const btn = document.getElementById('btnStep1');
+      const btn = document.getElementById('btnLogin');
       btn.disabled = true;
       btn.textContent = 'Verifying credentials...';
 
       try {
-        const res = await fetch('/api/admin/login-step1', {
+        const res = await fetch('/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            identifier,
-            password,
-            channel: selectedChannel
-          })
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('step1Form').style.display = 'none';
-          document.getElementById('step2Form').style.display = 'block';
-          document.getElementById('maskedAdminTarget').textContent = data.target_masked;
-          document.getElementById('adminOtpCode').value = '';
-          document.getElementById('adminOtpCode').focus();
-          showAlert(`✓ ${data.message}`, 'success');
-        } else {
-          if (data.provider_unconfigured) {
-            showAlert(`⚙️ <b>Provider Notice:</b> ${data.error}`, 'info');
-          } else {
-            showAlert(data.error || 'Authentication failed. Please check credentials.');
-          }
-        }
-      } catch (err) {
-        showAlert('Network error. Please try again.');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Verify Password & Request OTP ▸';
-      }
-    }
-
-    // Step 2: Submit OTP & Establish Admin Session
-    async function handleStep2Submit(e) {
-      e.preventDefault();
-      hideAlert();
-
-      const otpCode = document.getElementById('adminOtpCode').value.trim();
-      if (otpCode.length !== 6 || !/^\d+$/.test(otpCode)) {
-        showAlert('Please enter the 6-digit OTP code.');
-        return;
-      }
-
-      const btn = document.getElementById('btnStep2');
-      btn.disabled = true;
-      btn.textContent = 'Verifying OTP...';
-
-      try {
-        const res = await fetch('/api/admin/login-step2', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ otp_code: otpCode })
+          body: JSON.stringify({ identifier, password })
         });
 
         const data = await res.json();
@@ -387,15 +279,16 @@
           showAlert(`✓ Authentication successful! Loading dashboard...`, 'success');
           setTimeout(() => {
             window.location.href = data.redirect || '/admin/dashboard';
-          }, 600);
+          }, 400);
         } else {
-          showAlert(data.error || 'Invalid OTP code. Please try again.');
+          showAlert(data.error || 'Incorrect admin password or email/phone.');
         }
       } catch (err) {
-        showAlert('Network error during verification.');
+        // Fallback to standard form submit
+        document.getElementById('adminLoginForm').submit();
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Authenticate & Open Dashboard 🚀';
+        btn.textContent = 'Open Admin Dashboard (डायरेक्ट एडमिन पेज खोलें) 🚀';
       }
     }
   </script>

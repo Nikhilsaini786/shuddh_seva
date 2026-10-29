@@ -288,5 +288,83 @@ class ShuddhSevaFullTestSuite(unittest.TestCase):
 
         print("[PASS] Test 07: Admin 2-step authentication, access control, and price management verified.")
 
+    def test_08_admin_direct_login_and_image_management(self):
+        """Verify direct 1-step admin login without OTP and image updates."""
+        admin_client = app.test_client()
+
+        # 1. Direct Admin Login via Phone & Password
+        direct_resp = admin_client.post("/api/admin/login", json={
+            "identifier": "6350474290",
+            "password": "Shuddh@Admin2026!"
+        })
+        self.assertEqual(direct_resp.status_code, 200)
+        direct_data = direct_resp.get_json()
+        self.assertTrue(direct_data["success"])
+        self.assertEqual(direct_data["redirect"], "/admin/dashboard")
+        self.assertEqual(direct_data["admin"]["name"], "Ankit")
+
+        # 2. Directly access dashboard with the established session
+        dash_resp = admin_client.get("/admin/dashboard")
+        self.assertEqual(dash_resp.status_code, 200)
+
+        # 3. Direct Admin Login via Email & alternative password 'shuddh123'
+        client2 = app.test_client()
+        direct_resp2 = client2.post("/api/admin/direct-login", json={
+            "identifier": "infosevaspice@gmail.com",
+            "password": "shuddh123"
+        })
+        self.assertEqual(direct_resp2.status_code, 200)
+        self.assertTrue(direct_resp2.get_json()["success"])
+
+        # 4. Direct Login with wrong password rejected
+        bad_client = app.test_client()
+        bad_resp = bad_client.post("/api/admin/login", json={
+            "identifier": "6350474290",
+            "password": "wrongpassword"
+        })
+        self.assertEqual(bad_resp.status_code, 401)
+        self.assertFalse(bad_resp.get_json()["success"])
+
+        # 5. Admin updates Product Image (Front)
+        test_img_url = "/static/images/turmeric_pack_custom.jpg"
+        img_resp = admin_client.post("/api/admin/product/turmeric/image", data={
+            "side": "front",
+            "image_url": test_img_url
+        })
+        self.assertEqual(img_resp.status_code, 200)
+        self.assertTrue(img_resp.get_json()["success"])
+
+        # Verify updated in product catalog
+        prods = db.get_all_products()
+        turm = next(p for p in prods if p["id"] == "turmeric")
+        self.assertEqual(turm["front"], test_img_url)
+
+        # 6. Admin updates Product Image (Back)
+        test_back_url = "/static/images/turmeric_back_custom.jpg"
+        back_resp = admin_client.post("/api/admin/product/turmeric/image", data={
+            "side": "back",
+            "image_url": test_back_url
+        })
+        self.assertEqual(back_resp.status_code, 200)
+        self.assertTrue(back_resp.get_json()["success"])
+
+        prods_updated = db.get_all_products()
+        turm_updated = next(p for p in prods_updated if p["id"] == "turmeric")
+        self.assertEqual(turm_updated["back"], test_back_url)
+
+        # Reset back to original
+        db.update_product_image("turmeric", "front", "haldi-front.png")
+        db.update_product_image("turmeric", "back", "haldi-back.png")
+
+        # 7. Unauthenticated client cannot update product image
+        unauth_client = app.test_client()
+        unauth_img = unauth_client.post("/api/admin/product/turmeric/image", data={
+            "side": "front",
+            "image_url": "fake.jpg"
+        })
+        self.assertEqual(unauth_img.status_code, 401)
+
+        print("[PASS] Test 08: Direct Admin Login without OTP and Product Image Management verified.")
+
 if __name__ == "__main__":
     unittest.main()

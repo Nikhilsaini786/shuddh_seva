@@ -49,6 +49,22 @@ function updateCartBadge() {
   if (badge) badge.textContent = totalQty;
 }
 
+// Image URL resolver: handles static files, uploaded base64 data URIs, and external URLs
+function resolveImgUrl(img) {
+  if (!img) return '/static/images/combo_pack.jpg';
+  if (typeof img !== 'string') return '/static/images/combo_pack.jpg';
+  if (img.startsWith('data:') || img.startsWith('http://') || img.startsWith('https://')) {
+    return img;
+  }
+  if (img.startsWith('/static/')) {
+    return img;
+  }
+  if (img.startsWith('/')) {
+    return img;
+  }
+  return `/static/images/${img}`;
+}
+
 // ---------------- USER OTP AUTHENTICATION ---------------- //
 async function checkAuthStatus() {
   try {
@@ -56,30 +72,35 @@ async function checkAuthStatus() {
     const data = await res.json();
     if (data.logged_in && data.user) {
       currentUser = data.user;
-      renderUserAuthNav();
+      renderUserAuthNav(data.is_admin);
       prefillCustomerForm();
     } else {
       currentUser = null;
-      renderUserAuthNav();
+      renderUserAuthNav(data.is_admin);
     }
   } catch (e) {
     currentUser = null;
-    renderUserAuthNav();
+    renderUserAuthNav(false);
   }
 }
 
-function renderUserAuthNav() {
+function renderUserAuthNav(isAdmin = false) {
   const container = document.getElementById('userAuthContainer');
   if (!container) return;
+
+  const adminMenuLink = (isAdmin || (currentUser && currentUser.is_admin))
+    ? `<a href="/admin/dashboard" style="color:#c2410c; font-weight:700; background:#fff7ed; padding:6px 12px; display:block; border-bottom:1px solid #fed7aa;">👑 Admin Dashboard</a>`
+    : '';
 
   if (currentUser) {
     container.innerHTML = `
       <div class="user-dropdown">
         <button type="button" class="btn-user-pill" style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; padding:5px 12px; background:#fff; border:1px solid #d5d9d9;">
-          <small style="font-size:11px; color:#565959;">Hello, ${currentUser.name.split(' ')[0]}</small>
+          <small style="font-size:11px; color:#565959;">Hello, ${(currentUser.name || 'User').split(' ')[0]}</small>
           <span style="font-weight:700; font-size:13px; color:#0f1111;">Account & Orders ▾</span>
         </button>
         <div class="user-menu">
+          ${adminMenuLink}
           <button type="button" onclick="openMyOrdersModal()">📦 Your Orders</button>
           <a href="/login" style="color:var(--primary);">👤 Switch Account</a>
           <button type="button" onclick="handleLogout()" style="color:#c53030;">⏻ Sign Out</button>
@@ -335,13 +356,26 @@ async function handleSendOtp(e) {
         document.getElementById('verifyOtpHeading').textContent = 'Enter OTP & Details to Complete Signup';
       }
 
+      // Auto-fill OTP field if in demo/instant mode (e.g., initial Vercel deploy)
+      if (data.demo_mode && data.demo_otp) {
+        const dInput = document.getElementById('otpDigitInput');
+        if (dInput) dInput.value = data.demo_otp;
+      }
+
       const vAlert = document.getElementById('modalVerifyAlertBox');
       if (vAlert) {
         vAlert.style.display = 'block';
         vAlert.style.background = '#f0fdf4';
         vAlert.style.border = '1px solid #86efac';
         vAlert.style.color = '#166534';
-        vAlert.textContent = `✓ ${data.message}`;
+        let alertHtml = `✓ ${data.message}`;
+        if (data.demo_mode && data.demo_otp) {
+          alertHtml = `⚡ <b>Verification Code:</b> <span style="font-size:16px; font-weight:800; letter-spacing:2px; background:#fff; padding:2px 8px; border-radius:4px; border:1px solid #86efac; color:#15803d;">${data.demo_otp}</span> <small style="display:block; color:#166534; margin-top:3px;">(Auto-filled for instant verification on Vercel)</small>`;
+        }
+        if (data.is_admin) {
+          alertHtml += `<div style="margin-top:8px; padding:6px 10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:12px; color:#9a3412;">👑 <b>Store Owner:</b> <a href="/admin/login" style="color:#c2410c; font-weight:700; text-decoration:underline;">Click here to Direct Login with Password</a></div>`;
+        }
+        vAlert.innerHTML = alertHtml;
       }
 
       startResendCountdown();
@@ -567,11 +601,11 @@ function renderProducts() {
           <div class="card-flipper ${isFlipped ? 'flipped' : ''}" id="flipper-${p.id}">
             <!-- Front Face -->
             <div class="card-face card-face-front" onclick="openQuickView('${p.id}')" title="Click to view full packaging details">
-              <img src="/static/images/${p.front}" alt="${p.name} Front Packaging">
+              <img src="${resolveImgUrl(p.front)}" alt="${p.name} Front Packaging">
             </div>
             <!-- Back Face -->
             <div class="card-face card-face-back" onclick="openQuickView('${p.id}')" title="Click to view full back label details">
-              <img src="/static/images/${p.back}" alt="${p.name} Back Packaging">
+              <img src="${resolveImgUrl(p.back)}" alt="${p.name} Back Packaging">
             </div>
           </div>
           <!-- 3D Flip Button -->
@@ -706,7 +740,7 @@ function openQuickView(productId) {
 
   document.getElementById('qvTitle').textContent = p.name;
   document.getElementById('qvHindi').textContent = `${p.hindi} • ${p.tagline}`;
-  document.getElementById('qvImage').src = `/static/images/${p.front}`;
+  document.getElementById('qvImage').src = resolveImgUrl(p.front);
   document.getElementById('qvPrice').textContent = `₹${sizeData.price}`;
   document.getElementById('qvMrp').textContent = `₹${sizeData.mrp}`;
   document.getElementById('qvSave').textContent = sizeData.save || 'Best Value';
@@ -732,11 +766,11 @@ function switchQvImage(side) {
   const backBtn = document.getElementById('qvBackBtn');
 
   if (side === 'front') {
-    img.src = `/static/images/${activeProduct.front}`;
+    img.src = resolveImgUrl(activeProduct.front);
     frontBtn.classList.add('active');
     backBtn.classList.remove('active');
   } else {
-    img.src = `/static/images/${activeProduct.back}`;
+    img.src = resolveImgUrl(activeProduct.back);
     backBtn.classList.add('active');
     frontBtn.classList.remove('active');
   }
@@ -840,7 +874,7 @@ function renderCartModal() {
     return `
       <div class="cart-item-row">
         <div style="width: 50px; height: 50px; background:#f7f2e7; border-radius:8px; display:grid; place-items:center;">
-          <img src="/static/images/${item.front}" style="max-height: 42px; object-fit: contain;">
+          <img src="${resolveImgUrl(item.front)}" style="max-height: 42px; object-fit: contain;">
         </div>
         <div class="cart-item-info" style="flex:1;">
           <strong>${item.name}</strong>

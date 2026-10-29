@@ -287,14 +287,17 @@
   <div class="auth-card" id="cardSendOtp">
     <h1 class="auth-heading" id="authTitle">Sign in / Sign up</h1>
 
-    <!-- Tabs for Option A & Option B -->
+    <!-- Tabs for Option A, Option B, and Admin Direct Login -->
     <div class="auth-tab-bar">
       <button type="button" class="auth-tab-btn active" id="tabMobile" onclick="switchAuthTab('phone')">
-        📱 Option A: Mobile Number
+        📱 Mobile OTP
       </button>
       <button type="button" class="auth-tab-btn" id="tabEmail" onclick="switchAuthTab('email')">
-        ✉️ Option B: Gmail / Email
+        ✉️ Gmail OTP
       </button>
+      <a href="/admin/login" class="auth-tab-btn" style="text-decoration:none; color:#c2410c;">
+        👑 Admin
+      </a>
     </div>
 
     <!-- Alert Box -->
@@ -377,6 +380,17 @@
         🔒 Never share your OTP with anyone. Shuddh Seva Foods representatives will never ask for your verification code.
       </p>
     </form>
+  </div>
+
+  <!-- Store Owner Direct Access Notice -->
+  <div style="width: 100%; max-width: 400px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:12px 16px; margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+    <div style="font-size:12px; color:#9a3412;">
+      <b>Store Owner / Ankit?</b><br>
+      Direct access without OTP verification.
+    </div>
+    <a href="/admin/login" style="background:#ea580c; color:#fff; padding:7px 14px; border-radius:6px; font-weight:700; font-size:12px; text-decoration:none; white-space:nowrap;">
+      Admin Login 🚀
+    </a>
   </div>
 
   <div class="divider-row">
@@ -518,7 +532,20 @@
         const data = await res.json();
         if (data.success) {
           showVerifyOtpCard(data.target_masked);
-          showAlert('verifyAlertBox', `✓ ${data.message}`, 'success');
+          if (data.demo_mode && data.demo_otp) {
+            document.getElementById('inputOtpCode').value = data.demo_otp;
+            let msg = `⚡ <b>Verification Code:</b> <span style="font-size:18px; font-weight:800; letter-spacing:2px; background:#fff; padding:2px 10px; border-radius:6px; border:1px solid #86efac; color:#15803d; display:inline-block; margin:4px 0;">${data.demo_otp}</span><br><small style="color:#166534;">(Auto-filled for instant verification on Vercel)</small>`;
+            if (data.is_admin) {
+              msg += `<div style="margin-top:8px; padding:6px 10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:12px; color:#9a3412;">👑 <b>Store Owner Detected!</b> <a href="/admin/login" style="color:#c2410c; font-weight:700; text-decoration:underline;">Click here to Direct Login with Password</a></div>`;
+            }
+            showAlert('verifyAlertBox', msg, 'success');
+          } else {
+            let msg = `✓ ${data.message}`;
+            if (data.is_admin) {
+              msg += `<div style="margin-top:8px; padding:6px 10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:12px; color:#9a3412;">👑 <b>Store Owner Detected!</b> <a href="/admin/login" style="color:#c2410c; font-weight:700; text-decoration:underline;">Click here to Direct Login with Password</a></div>`;
+            }
+            showAlert('verifyAlertBox', msg, 'success');
+          }
         } else {
           if (data.provider_unconfigured) {
             showAlert('sendAlertBox', `⚙️ <b>Provider Notice:</b> ${data.error}`, 'info');

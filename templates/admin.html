@@ -151,17 +151,17 @@
       gap: 16px;
     }
     .profile-avatar {
-      width: 52px;
-      height: 52px;
+      width: 54px;
+      height: 54px;
       background: #fdf5e6;
       border: 2px solid var(--gold);
       border-radius: 50%;
       display: grid;
       place-items: center;
-      font-size: 24px;
+      font-size: 26px;
     }
     .profile-details h2 {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
       color: var(--primary);
       margin-bottom: 2px;
@@ -169,14 +169,9 @@
     .profile-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
+      gap: 16px;
       font-size: 13px;
       color: var(--muted);
-    }
-    .profile-meta span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
     }
     .profile-meta b {
       color: var(--ink);
@@ -259,6 +254,7 @@
     .tab-btn.highlight {
       border-color: var(--accent);
       color: var(--accent);
+      font-weight: 700;
     }
     .tab-btn.highlight.active {
       background: var(--accent);
@@ -407,41 +403,33 @@
       border-color: #bbf7d0;
     }
 
-    /* Products Grid */
+    /* Products Management Grid */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 20px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 22px;
+      padding: 22px;
     }
     .product-manage-card {
       background: #fff;
       border: 1.5px solid var(--border);
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
-    .product-manage-head {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .product-manage-header {
       padding: 16px;
       background: #faf8f5;
       border-bottom: 1px solid var(--border);
-    }
-    .product-manage-thumb {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-      background: #fff;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      padding: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .product-manage-title h3 {
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 800;
       color: var(--primary);
       margin-bottom: 2px;
     }
@@ -449,6 +437,48 @@
       color: var(--muted);
       font-size: 12px;
     }
+    
+    /* Side-by-side Images in Admin */
+    .product-images-row {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      background: #fffdfa;
+      border-bottom: 1px solid #f0eae1;
+    }
+    .product-img-box {
+      flex: 1;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .product-img-box img {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+    .btn-change-img {
+      width: 100%;
+      background: #fdf5e6;
+      border: 1px solid var(--gold);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .btn-change-img:hover {
+      background: #faeccf;
+    }
+
     .sizes-table {
       width: 100%;
       border-collapse: collapse;
@@ -456,13 +486,13 @@
       margin: 10px 0;
     }
     .sizes-table th, .sizes-table td {
-      padding: 8px 12px;
+      padding: 8px 10px;
       border-bottom: 1px solid #f0eae1;
     }
     .price-input {
-      width: 70px;
-      padding: 4px 6px;
-      border: 1px solid var(--border);
+      width: 65px;
+      padding: 5px 6px;
+      border: 1.5px solid var(--border);
       border-radius: 6px;
       font-size: 13px;
       font-weight: 700;
@@ -472,18 +502,21 @@
       background: var(--accent);
       color: #fff;
       border: none;
-      padding: 5px 10px;
+      padding: 6px 10px;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
+    }
+    .btn-save-price:hover {
+      background: #11502b;
     }
 
     /* Modal Backdrop */
     .modal-backdrop {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.6);
       z-index: 1000;
       display: none;
       align-items: center;
@@ -542,7 +575,7 @@
     <div class="admin-actions">
       <div class="live-indicator">
         <div class="pulse-dot"></div>
-        <span>Live Order Feed</span>
+        <span>Live Store Orders</span>
       </div>
       <a href="/" target="_blank" class="btn-top">View Live Store ↗</a>
       <a href="/admin/logout" class="btn-top btn-logout">Logout ⏻</a>
@@ -551,23 +584,23 @@
 
   <main class="container">
 
-    <!-- Admin Profile Banner -->
+    <!-- Store Owner Profile Card -->
     <section class="admin-profile-card">
       <div class="profile-info">
         <div class="profile-avatar">👨‍💼</div>
         <div class="profile-details">
-          <h2>Store Owner Profile — <span style="color:var(--gold);">Ankit</span></h2>
+          <h2>Store Owner Admin — <span style="color:var(--gold);">Ankit</span></h2>
           <div class="profile-meta">
             <span>📞 Mobile: <b>+91 6350474290</b></span>
             <span>✉️ Email: <b>infosevaspice@gmail.com</b></span>
             <span>📍 Location: <b>Jaipur, Rajasthan</b></span>
-            <span>🛡️ Access: <b style="color:var(--accent);">Super Administrator</b></span>
+            <span>🛡️ Status: <b style="color:var(--accent);">Active Superadmin</b></span>
           </div>
         </div>
       </div>
       <div>
         <a href="/admin/logout" class="btn-action" style="background:#b91c1c;">
-          Sign Out
+          Sign Out ⏻
         </a>
       </div>
     </section>
@@ -602,7 +635,7 @@
         <div class="stat-icon delivered">🚚</div>
         <div class="stat-info">
           <h3 id="statDelivered">0</h3>
-          <p>Delivered</p>
+          <p>Delivered Orders</p>
         </div>
       </div>
 
@@ -610,7 +643,7 @@
         <div class="stat-icon inquiries">✉️</div>
         <div class="stat-info">
           <h3 id="statInquiries">0</h3>
-          <p>Inquiries</p>
+          <p>Customer Inquiries</p>
         </div>
       </div>
     </section>
@@ -618,14 +651,14 @@
     <!-- Controls Bar -->
     <div class="controls-bar">
       <div class="tabs">
-        <button class="tab-btn active" data-filter="all">All Orders</button>
-        <button class="tab-btn" data-filter="Pending">Pending</button>
-        <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
-        <button class="tab-btn" data-filter="Shipped">Shipped</button>
-        <button class="tab-btn" data-filter="Delivered">Delivered</button>
-        <button class="tab-btn" data-filter="Cancelled">Cancelled</button>
-        <button class="tab-btn highlight" id="tabBtnProducts">Manage Products & Prices</button>
-        <button class="tab-btn" id="inquiriesTabBtn">Customer Inquiries</button>
+        <button class="tab-btn active" data-filter="all">📦 All Orders</button>
+        <button class="tab-btn" data-filter="Pending">⏳ Pending</button>
+        <button class="tab-btn" data-filter="Confirmed">✅ Confirmed</button>
+        <button class="tab-btn" data-filter="Shipped">🚚 Shipped</button>
+        <button class="tab-btn" data-filter="Delivered">🎉 Delivered</button>
+        <button class="tab-btn" data-filter="Cancelled">❌ Cancelled</button>
+        <button class="tab-btn highlight" id="tabBtnProducts">🖼️ Manage Products & Prices</button>
+        <button class="tab-btn" id="inquiriesTabBtn">✉️ Inquiries</button>
       </div>
 
       <div class="search-wrap" id="searchWrap">
@@ -636,7 +669,7 @@
       </div>
     </div>
 
-    <!-- 1. Orders View -->
+    <!-- 1. Orders View Table -->
     <div id="ordersView" class="table-card">
       <div class="table-responsive">
         <table>
@@ -645,10 +678,10 @@
               <th>Order ID & Date</th>
               <th>Customer</th>
               <th>Location</th>
-              <th>Items</th>
+              <th>Items Ordered</th>
               <th>Amount & Payment</th>
               <th>Order Status</th>
-              <th>Actions</th>
+              <th>Quick Actions</th>
             </tr>
           </thead>
           <tbody id="ordersTableBody">
@@ -658,14 +691,14 @@
       </div>
     </div>
 
-    <!-- 2. Products & Price Management View -->
+    <!-- 2. Products, Image & Price Management View -->
     <div id="productsView" class="table-card" style="display: none;">
       <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <h3 style="color:var(--primary); font-size:16px;">Product Packaging & Price Management</h3>
-          <small style="color:var(--muted)">Update prices, MRPs, or toggle stock availability for store packaging</small>
+          <h3 style="color:var(--primary); font-size:17px;">Product Packaging Images & Price Management</h3>
+          <small style="color:var(--muted)">Change front & back packaging images, update pack prices/MRPs, or toggle stock</small>
         </div>
-        <span class="badge" style="background:#e8f5e9; color:#1b5e20;">4 Live Products Active</span>
+        <span class="badge" style="background:#e8f5e9; color:#1b5e20;">4 Products Active</span>
       </div>
       <div class="products-grid" id="productsGrid">
         <!-- Populated dynamically -->
@@ -696,11 +729,44 @@
 
   </main>
 
-  <!-- Modal: Order Details / Customer Order History -->
+  <!-- Modal 1: Order Details / Customer Order History -->
   <div class="modal-backdrop" id="adminModal">
     <div class="modal-box">
       <button class="modal-close" onclick="closeAdminModal()">×</button>
       <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Product Image Uploader -->
+  <div class="modal-backdrop" id="imageModal">
+    <div class="modal-box" style="max-width:500px;">
+      <button class="modal-close" onclick="closeImageModal()">×</button>
+      <h3 style="color:var(--primary); font-size:18px; margin-bottom:4px;" id="imageModalTitle">Change Product Packaging Image</h3>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:18px;">Upload a new image file from your device or enter an image URL.</p>
+
+      <form id="imageUploadForm" onsubmit="handleImageUploadSubmit(event)">
+        <input type="hidden" id="imgUploadProductId">
+        <input type="hidden" id="imgUploadSide">
+
+        <div style="text-align:center; margin-bottom:16px; padding:12px; background:#faf8f5; border-radius:10px; border:1px solid var(--border);">
+          <img id="imagePreviewTarget" src="" alt="Preview" style="max-height:160px; max-width:100%; object-fit:contain;">
+          <div style="font-size:11px; color:var(--muted); margin-top:6px;">Current Packaging Preview</div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:13px; font-weight:700; display:block; margin-bottom:6px;">Option 1: Choose File from Computer / Mobile</label>
+          <input type="file" id="imageFileInput" accept="image/png,image/jpeg,image/webp" onchange="previewSelectedFile(event)" style="font-size:13px; width:100%;">
+        </div>
+
+        <div style="margin-bottom:18px;">
+          <label style="font-size:13px; font-weight:700; display:block; margin-bottom:6px;">Option 2: Or Paste Image URL</label>
+          <input type="text" id="imageUrlInput" placeholder="https://example.com/image.png or filename" style="width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px;">
+        </div>
+
+        <button type="submit" class="btn-action" id="btnSaveImage" style="width:100%; justify-content:center; padding:12px;">
+          💾 Save & Update Packaging Image
+        </button>
+      </form>
     </div>
   </div>
 
@@ -710,6 +776,14 @@
     let productsData = [];
     let inquiriesData = [];
     let activeTab = 'orders'; // 'orders', 'products', 'inquiries'
+
+    function resolveImg(src) {
+      if (!src) return '/static/images/turmeric-front.png';
+      if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
+        return src;
+      }
+      return `/static/images/${src}`;
+    }
 
     async function loadStats() {
       try {
@@ -758,7 +832,7 @@
             <td>
               <div class="customer-info">
                 <strong>${o.customer_name}</strong>
-                <small>📞 ${o.phone}</small>
+                <small>📞 <a href="tel:${o.phone}">${o.phone}</a></small>
                 ${o.email ? `<small style="display:block;">✉️ ${o.email}</small>` : ''}
               </div>
             </td>
@@ -928,7 +1002,7 @@
       document.getElementById('adminModal').classList.remove('show');
     }
 
-    // ----------------- PRODUCT & PRICE MANAGEMENT ----------------- //
+    // ----------------- PRODUCT & PRICE & IMAGE MANAGEMENT ----------------- //
 
     async function loadProducts() {
       try {
@@ -964,15 +1038,33 @@
 
         return `
           <div class="product-manage-card">
-            <div class="product-manage-head">
-              <img src="/static/images/${p.front}" alt="${p.name}" class="product-manage-thumb">
+            <div class="product-manage-header">
               <div class="product-manage-title">
                 <h3>${p.name}</h3>
                 <small>${p.hindi || ''} • ${p.badge || '100% Pure'}</small>
               </div>
+              <span class="badge" style="background:#fdf5e6; color:var(--primary);">ID: ${p.id}</span>
             </div>
+
+            <!-- Front & Back Images with Change Buttons -->
+            <div class="product-images-row">
+              <div class="product-img-box">
+                <img src="${resolveImg(p.front)}" id="img_preview_${p.id}_front" alt="Front Packaging">
+                <button type="button" class="btn-change-img" onclick="openImageModal('${p.id}', 'front', '${resolveImg(p.front)}')">
+                  📷 Change Front
+                </button>
+              </div>
+              <div class="product-img-box">
+                <img src="${resolveImg(p.back)}" id="img_preview_${p.id}_back" alt="Back Packaging">
+                <button type="button" class="btn-change-img" onclick="openImageModal('${p.id}', 'back', '${resolveImg(p.back)}')">
+                  📷 Change Back
+                </button>
+              </div>
+            </div>
+
+            <!-- Pack Sizes & Prices Table -->
             <div style="padding:14px;">
-              <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Pack Sizes & Selling Prices:</div>
+              <div style="font-size:11.5px; font-weight:700; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Pack Sizes & Selling Prices:</div>
               <table class="sizes-table">
                 <thead>
                   <tr>
@@ -1014,7 +1106,7 @@
         });
         const data = await res.json();
         if (data.success) {
-          alert(`✓ Price updated for ${productId} (${size}g)`);
+          alert(`✓ Price updated successfully for ${productId} (${size}g): ₹${priceVal}`);
           loadProducts();
         } else {
           alert(data.message || 'Failed to update price');
@@ -1037,6 +1129,80 @@
         }
       } catch (e) {
         alert('Error updating stock status');
+      }
+    }
+
+    // ----------------- IMAGE MODAL & UPLOAD ----------------- //
+
+    function openImageModal(productId, side, currentImgSrc) {
+      document.getElementById('imgUploadProductId').value = productId;
+      document.getElementById('imgUploadSide').value = side;
+      document.getElementById('imageModalTitle').textContent = `Change ${side.toUpperCase()} Packaging Image (${productId})`;
+      document.getElementById('imagePreviewTarget').src = currentImgSrc;
+      document.getElementById('imageFileInput').value = '';
+      document.getElementById('imageUrlInput').value = '';
+      document.getElementById('imageModal').classList.add('show');
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').classList.remove('show');
+    }
+
+    function previewSelectedFile(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          document.getElementById('imagePreviewTarget').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function handleImageUploadSubmit(e) {
+      e.preventDefault();
+      const productId = document.getElementById('imgUploadProductId').value;
+      const side = document.getElementById('imgUploadSide').value;
+      const fileInput = document.getElementById('imageFileInput');
+      const urlInput = document.getElementById('imageUrlInput').value.trim();
+
+      const btn = document.getElementById('btnSaveImage');
+      btn.disabled = true;
+      btn.textContent = 'Saving Image...';
+
+      try {
+        const formData = new FormData();
+        formData.append('side', side);
+
+        if (fileInput.files.length > 0) {
+          formData.append('image_file', fileInput.files[0]);
+        } else if (urlInput) {
+          formData.append('image_url', urlInput);
+        } else {
+          alert('Please select an image file or enter an image URL.');
+          btn.disabled = false;
+          btn.textContent = '💾 Save & Update Packaging Image';
+          return;
+        }
+
+        const res = await fetch(`/api/admin/product/${productId}/image`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert(`✓ Product ${side} image updated successfully!`);
+          closeImageModal();
+          loadProducts();
+        } else {
+          alert(data.error || 'Failed to update image.');
+        }
+      } catch (err) {
+        alert('Network error updating product image.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💾 Save & Update Packaging Image';
       }
     }
 
