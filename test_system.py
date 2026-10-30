@@ -15,9 +15,10 @@ class ShuddhSevaFullTestSuite(unittest.TestCase):
 
     def setUp(self):
         self.client = app.test_client()
-        # Clean OTP records between test runs so 45s rate limit doesn't block automated test executions
+        # Clean OTP and test customer records between test runs so tests remain idempotent
         conn = db.get_db()
         conn.execute("DELETE FROM otp_verifications")
+        conn.execute("DELETE FROM users WHERE phone IN ('9829099887', '9829011122', '9829033344')")
         conn.commit()
         conn.close()
 
