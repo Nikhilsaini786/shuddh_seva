@@ -81,14 +81,157 @@ def home():
 def api_products():
     return jsonify(db.get_all_products(active_only=False))
 
-@app.route("/login")
-@app.route("/signup")
+@app.route("/login", methods=["GET", "POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def auth_page():
+    if request.method == "POST":
+        action = request.form.get("action", "login")
+        if action == "signup":
+            name = request.form.get("name", "").strip()
+            identifier = request.form.get("identifier", "").strip()
+            password = request.form.get("password", "").strip()
+            ok, msg, user = db.register_customer(name=name, identifier=identifier, password=password)
+            if ok:
+                session.permanent = True
+                session["user_id"] = user["id"]
+                session["user_name"] = user["name"]
+                session["user_phone"] = user.get("phone")
+                session["user_email"] = user.get("email")
+                next_url = request.args.get("next") or url_for("home")
+                return redirect(next_url)
+            return render_template("auth.html", error=msg, active_tab="signup")
+        else:
+            identifier = request.form.get("identifier", "").strip()
+            password = request.form.get("password", "").strip()
+            ok, user_or_admin, is_admin, err_msg = db.authenticate_user_or_admin(identifier, password)
+            if ok:
+                session.permanent = True
+                if is_admin:
+                    session["admin_logged_in"] = True
+                    session["admin_user"] = user_or_admin
+                    return redirect(url_for("admin_dashboard"))
+                else:
+                    session["user_id"] = user_or_admin["id"]
+                    session["user_name"] = user_or_admin["name"]
+                    session["user_phone"] = user_or_admin.get("phone")
+                    session["user_email"] = user_or_admin.get("email")
+                    next_url = request.args.get("next") or url_for("home")
+                    return redirect(next_url)
+            return render_template("auth.html", error=err_msg, active_tab="login")
+
     if session.get("user_id"):
         return redirect(url_for("home"))
+    if session.get("admin_logged_in"):
+        return redirect(url_for("admin_dashboard"))
     return render_template("auth.html")
 
-# ----------------- CUSTOMER OTP AUTHENTICATION ----------------- #
+# ----------------- CUSTOMER SIGNUP & LOGIN (PASSWORD-BASED / NO OTP) ----------------- #
+
+@app.route("/api/auth/signup", methods=["POST"])
+@app.route("/api/auth/register", methods=["POST"])
+def auth_signup():
+    """Create a new customer account with name, mobile/email, and password."""
+    try:
+        data = request.get_json(force=True) if request.is_json else request.form
+        name = (data.get("name") or "").strip()
+        identifier = (data.get("identifier") or data.get("phone") or data.get("email") or "").strip()
+        password = (data.get("password") or "").strip()
+        phone = (data.get("phone") or "").strip()
+        email = (data.get("email") or "").strip()
+        address = (data.get("address") or "").strip()
+        landmark = (data.get("landmark") or "").strip()
+        city = (data.get("city") or "Jaipur").strip()
+        state = (data.get("state") or "Rajasthan").strip()
+        pincode = (data.get("pincode") or "").strip()
+
+        ok, msg, user = db.register_customer(
+            name=name,
+            identifier=identifier,
+            password=password,
+            phone=phone,
+            email=email,
+            address=address,
+            landmark=landmark,
+            city=city,
+            state=state,
+            pincode=pincode
+        )
+
+        if not ok:
+            return jsonify({"success": False, "error": msg}), 400
+
+        # Login new customer automatically
+        session.permanent = True
+        session["user_id"] = user["id"]
+        session["user_name"] = user["name"]
+        session["user_phone"] = user.get("phone")
+        session["user_email"] = user.get("email")
+
+        return jsonify({
+            "success": True,
+            "message": msg,
+            "user": user,
+            "redirect": "/"
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/auth/login", methods=["POST"])
+@app.route("/api/auth/signin", methods=["POST"])
+def auth_login():
+    """
+    Unified Sign In for both Customers and Admin from the SAME login interface.
+    Normal users never see admin options: if Admin logs in, it takes them straight
+    to /admin/dashboard; if Customer logs in, it sets customer session!
+    """
+    try:
+        data = request.get_json(force=True) if request.is_json else request.form
+        identifier = (data.get("identifier") or data.get("phone") or data.get("email") or "").strip()
+        password = (data.get("password") or "").strip()
+
+        if not identifier or not password:
+            return jsonify({"success": False, "error": "Please enter your mobile/email and password."}), 400
+
+        ok, user_or_admin, is_admin, err_msg = db.authenticate_user_or_admin(identifier, password)
+        if not ok:
+            return jsonify({"success": False, "error": err_msg or "Invalid login credentials."}), 401
+
+        session.permanent = True
+
+        if is_admin:
+            # Grant Admin Session
+            session["admin_logged_in"] = True
+            session["admin_user"] = {
+                "id": user_or_admin["id"],
+                "name": user_or_admin["name"],
+                "email": user_or_admin["email"],
+                "phone": user_or_admin["phone"],
+                "role": user_or_admin.get("role", "superadmin")
+            }
+            return jsonify({
+                "success": True,
+                "is_admin": True,
+                "message": f"Welcome, Admin {user_or_admin['name']}!",
+                "redirect": "/admin/dashboard"
+            })
+        else:
+            # Grant Customer Session
+            session["user_id"] = user_or_admin["id"]
+            session["user_name"] = user_or_admin["name"]
+            session["user_phone"] = user_or_admin.get("phone")
+            session["user_email"] = user_or_admin.get("email")
+            return jsonify({
+                "success": True,
+                "is_admin": False,
+                "message": f"Welcome back, {user_or_admin['name']}!",
+                "user": user_or_admin,
+                "redirect": "/"
+            })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# ----------------- CUSTOMER OTP AUTHENTICATION (LEGACY FALLBACK) ----------------- #
 
 @app.route("/api/auth/send-otp", methods=["POST"])
 def auth_send_otp():

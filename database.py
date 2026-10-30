@@ -543,6 +543,121 @@ def get_or_create_user(target: str, target_type: str, name: str = "", address: s
         return user
 
 
+def register_customer(name: str, identifier: str = "", password: str = "", phone: str = "", email: str = "",
+                      address: str = "", landmark: str = "", city: str = "Jaipur", state: str = "Rajasthan", pincode: str = ""):
+    """
+    Create a new customer account with secure password hashing.
+    identifier can be 10-digit Indian mobile number or email.
+    """
+    name = (name or "").strip()
+    password = (password or "").strip()
+    raw_ident = (identifier or phone or email or "").strip()
+
+    if not name:
+        return False, "Please enter your Full Name.", None
+    if len(password) < 4:
+        return False, "Password must be at least 4 characters.", None
+
+    phone_val = normalize_phone(phone or raw_ident) if not ("@" in (phone or raw_ident)) else None
+    email_val = normalize_email(email or raw_ident) if ("@" in (email or raw_ident)) else None
+
+    if phone and not phone_val:
+        phone_val = normalize_phone(phone)
+    if email and not email_val:
+        email_val = normalize_email(email)
+
+    if not phone_val and not email_val:
+        return False, "Please enter a valid 10-digit mobile number or email address.", None
+
+    conn = get_db()
+    c = conn.cursor()
+
+    # Check for existing user
+    if phone_val and email_val:
+        c.execute("SELECT id FROM users WHERE phone = ? OR email = ?", (phone_val, email_val))
+    elif phone_val:
+        c.execute("SELECT id FROM users WHERE phone = ?", (phone_val,))
+    else:
+        c.execute("SELECT id FROM users WHERE email = ?", (email_val,))
+
+    if c.fetchone():
+        conn.close()
+        return False, "An account with this mobile number or email already exists. Please Sign In.", None
+
+    salt = secrets.token_hex(16)
+    pass_hash = hash_with_salt(password, salt)
+
+    c.execute("""
+    INSERT INTO users (name, phone, email, password_hash, salt, address, landmark, city, state, pincode)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (name, phone_val, email_val, pass_hash, salt, address.strip(), landmark.strip(), city.strip(), state.strip(), pincode.strip()))
+    conn.commit()
+    user_id = c.lastrowid
+
+    c.execute("SELECT id, name, phone, email, address, landmark, city, state, pincode, created_at FROM users WHERE id = ?", (user_id,))
+    user = dict(c.fetchone())
+    conn.close()
+    return True, f"Welcome to Shuddh Seva Foods, {name}!", user
+
+
+def authenticate_user_or_admin(identifier: str, password: str):
+    """
+    Authenticate against both admin_users and users table seamlessly from the same login.
+    Returns: (success: bool, user_or_admin_data: dict|None, is_admin: bool, error_msg: str|None)
+    """
+    identifier = str(identifier or "").strip()
+    password = str(password or "").strip()
+
+    if not identifier or not password:
+        return False, None, False, "Please enter your mobile/email and password."
+
+    # 1. First check if credentials belong to Admin (Ankit)
+    is_admin_valid, admin_data = verify_admin_password(identifier, password)
+    if is_admin_valid:
+        return True, admin_data, True, None
+
+    # 2. Check regular customer users table
+    conn = get_db()
+    c = conn.cursor()
+    norm_phone = normalize_phone(identifier)
+    norm_email = normalize_email(identifier)
+
+    if "@" in identifier:
+        c.execute("SELECT * FROM users WHERE email = ? ORDER BY id DESC LIMIT 1", (norm_email,))
+    else:
+        c.execute("SELECT * FROM users WHERE phone = ? OR email = ? ORDER BY id DESC LIMIT 1", (norm_phone, norm_email))
+
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        return False, None, False, "No account found with this mobile or email. Please click 'Create Account' to sign up."
+
+    user = dict(row)
+    stored_hash = user.get("password_hash") or ""
+    salt = user.get("salt") or ""
+
+    if stored_hash:
+        computed = hash_with_salt(password, salt)
+        if hmac.compare_digest(computed, stored_hash):
+            conn.close()
+            user.pop("password_hash", None)
+            user.pop("salt", None)
+            return True, user, False, None
+        else:
+            conn.close()
+            return False, None, False, "Incorrect password. Please try again."
+    else:
+        # First time setting password for old record
+        new_salt = secrets.token_hex(16)
+        new_hash = hash_with_salt(password, new_salt)
+        c.execute("UPDATE users SET password_hash = ?, salt = ? WHERE id = ?", (new_hash, new_salt, user["id"]))
+        conn.commit()
+        conn.close()
+        user.pop("password_hash", None)
+        user.pop("salt", None)
+        return True, user, False, None
+
+
 def get_user_by_id(user_id):
     conn = get_db()
     c = conn.cursor()

@@ -366,5 +366,95 @@ class ShuddhSevaFullTestSuite(unittest.TestCase):
 
         print("[PASS] Test 08: Direct Admin Login without OTP and Product Image Management verified.")
 
+    def test_09_password_based_customer_signup_and_unified_login(self):
+        """Verify seamless customer signup (account create) and unified login without OTP."""
+        client = app.test_client()
+
+        # 1. Customer Sign Up (Create Account)
+        signup_payload = {
+            "name": "Pooja Sharma",
+            "identifier": "9829099887",
+            "password": "shuddh_password_123",
+            "address": "Vaishali Nagar",
+            "city": "Jaipur",
+            "pincode": "302021"
+        }
+        resp = client.post("/api/auth/signup", json=signup_payload)
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertTrue(data["success"])
+        self.assertEqual(data["user"]["name"], "Pooja Sharma")
+        self.assertEqual(data["user"]["phone"], "9829099887")
+
+        # Session should be established immediately upon signup
+        me_resp = client.get("/api/auth/me")
+        me_data = me_resp.get_json()
+        self.assertTrue(me_data["logged_in"])
+        self.assertEqual(me_data["user"]["name"], "Pooja Sharma")
+
+        # 2. Duplicate signup should be rejected politely
+        dup_resp = client.post("/api/auth/signup", json=signup_payload)
+        self.assertEqual(dup_resp.status_code, 400)
+        self.assertIn("already exists", dup_resp.get_json()["error"])
+
+        # 3. Customer Sign In from new session
+        client2 = app.test_client()
+        login_resp = client2.post("/api/auth/login", json={
+            "identifier": "9829099887",
+            "password": "shuddh_password_123"
+        })
+        self.assertEqual(login_resp.status_code, 200)
+        login_data = login_resp.get_json()
+        self.assertTrue(login_data["success"])
+        self.assertFalse(login_data["is_admin"])
+        self.assertEqual(login_data["user"]["name"], "Pooja Sharma")
+
+        # 4. Wrong password rejected
+        bad_resp = client2.post("/api/auth/login", json={
+            "identifier": "9829099887",
+            "password": "wrong_password"
+        })
+        self.assertEqual(bad_resp.status_code, 401)
+        self.assertIn("Incorrect password", bad_resp.get_json()["error"])
+
+        # 5. Non-existent account rejected with helpful advice
+        notfound_resp = client2.post("/api/auth/login", json={
+            "identifier": "9999999999",
+            "password": "anypassword"
+        })
+        self.assertEqual(notfound_resp.status_code, 401)
+        self.assertIn("No account found", notfound_resp.get_json()["error"])
+
+        # 6. UNIFIED LOGIN: Store Owner Ankit logs in from the EXACT SAME endpoint
+        admin_login_resp = client2.post("/api/auth/login", json={
+            "identifier": "6350474290",
+            "password": "Shuddh@Admin2026!"
+        })
+        self.assertEqual(admin_login_resp.status_code, 200)
+        admin_data = admin_login_resp.get_json()
+        self.assertTrue(admin_data["success"])
+        self.assertTrue(admin_data["is_admin"])
+        self.assertEqual(admin_data["redirect"], "/admin/dashboard")
+
+        # 7. Customer places order using authenticated session (no OTP roadblock)
+        order_resp = client.post("/api/order", json={
+            "name": "Pooja Sharma",
+            "phone": "9829099887",
+            "items": [{"id": "coriander", "name": "Coriander Powder", "size": "100", "price": 40, "qty": 2}],
+            "subtotal": 80,
+            "discount": 0,
+            "delivery_fee": 40,
+            "total": 120,
+            "payment_method": "COD",
+            "address": "Vaishali Nagar",
+            "city": "Jaipur",
+            "state": "Rajasthan",
+            "pincode": "302021"
+        })
+        self.assertEqual(order_resp.status_code, 200)
+        self.assertTrue(order_resp.get_json()["success"])
+
+        print("[PASS] Test 09: Password-based Account Create (Signup) and Unified Sign In verified.")
+
 if __name__ == "__main__":
     unittest.main()

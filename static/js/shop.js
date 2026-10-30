@@ -234,12 +234,14 @@ function applyLanguage(lang) {
   renderProducts();
 }
 
-function switchModalAuthTab(channel) {
-  modalAuthChannel = channel;
-  const tabPhone = document.getElementById('modalTabPhone');
-  const tabEmail = document.getElementById('modalTabEmail');
-  const groupPhone = document.getElementById('modalGroupPhone');
-  const groupEmail = document.getElementById('modalGroupEmail');
+let modalAuthMode = 'signin';
+
+function switchModalAuthMode(mode) {
+  modalAuthMode = mode;
+  const tabIn = document.getElementById('modalTabSignIn');
+  const tabUp = document.getElementById('modalTabSignUp');
+  const secIn = document.getElementById('modalSectionSignIn');
+  const secUp = document.getElementById('modalSectionSignUp');
   const alertBox = document.getElementById('modalAlertBox');
 
   if (alertBox) {
@@ -247,217 +249,168 @@ function switchModalAuthTab(channel) {
     alertBox.innerHTML = '';
   }
 
-  if (channel === 'phone') {
-    if (tabPhone) { tabPhone.style.borderBottomColor = '#e47911'; tabPhone.style.color = '#4a210f'; }
-    if (tabEmail) { tabEmail.style.borderBottomColor = 'transparent'; tabEmail.style.color = '#767676'; }
-    if (groupPhone) groupPhone.style.display = 'block';
-    if (groupEmail) groupEmail.style.display = 'none';
-    document.getElementById('otpPhoneInput')?.focus();
+  if (mode === 'signin') {
+    if (tabIn) { tabIn.style.borderBottomColor = '#e47911'; tabIn.style.color = '#4a210f'; }
+    if (tabUp) { tabUp.style.borderBottomColor = 'transparent'; tabUp.style.color = '#767676'; }
+    if (secIn) secIn.style.display = 'block';
+    if (secUp) secUp.style.display = 'none';
+    document.getElementById('modalSignInIdent')?.focus();
   } else {
-    if (tabEmail) { tabEmail.style.borderBottomColor = '#e47911'; tabEmail.style.color = '#4a210f'; }
-    if (tabPhone) { tabPhone.style.borderBottomColor = 'transparent'; tabPhone.style.color = '#767676'; }
-    if (groupPhone) groupPhone.style.display = 'none';
-    if (groupEmail) groupEmail.style.display = 'block';
-    document.getElementById('otpEmailInput')?.focus();
+    if (tabUp) { tabUp.style.borderBottomColor = '#e47911'; tabUp.style.color = '#4a210f'; }
+    if (tabIn) { tabIn.style.borderBottomColor = 'transparent'; tabIn.style.color = '#767676'; }
+    if (secUp) secUp.style.display = 'block';
+    if (secIn) secIn.style.display = 'none';
+    document.getElementById('modalSignUpName')?.focus();
   }
 }
 
 function openAuthModal(reasonText = '') {
-  resetOtpForm();
   const reasonBox = document.getElementById('authReasonBox');
   if (reasonBox) {
     if (reasonText) {
       reasonBox.textContent = reasonText;
-      reasonBox.style.display = 'flex';
+      reasonBox.style.display = 'block';
     } else {
       reasonBox.style.display = 'none';
     }
   }
+  const alertBox = document.getElementById('modalAlertBox');
+  if (alertBox) {
+    alertBox.style.display = 'none';
+    alertBox.innerHTML = '';
+  }
+  switchModalAuthMode('signin');
   document.getElementById('authModal').classList.add('show');
 }
 
 function closeAuthModal() {
   document.getElementById('authModal').classList.remove('show');
-  clearInterval(resendTimerInterval);
 }
 
-function resetOtpForm() {
-  document.getElementById('otpStepSend').style.display = 'block';
-  document.getElementById('otpStepVerify').style.display = 'none';
-  const pInput = document.getElementById('otpPhoneInput');
-  const eInput = document.getElementById('otpEmailInput');
-  const dInput = document.getElementById('otpDigitInput');
-  if (pInput) pInput.value = '';
-  if (eInput) eInput.value = '';
-  if (dInput) dInput.value = '';
-
-  const alert1 = document.getElementById('modalAlertBox');
-  const alert2 = document.getElementById('modalVerifyAlertBox');
-  if (alert1) alert1.style.display = 'none';
-  if (alert2) alert2.style.display = 'none';
-
-  clearInterval(resendTimerInterval);
-}
-
-// Step 1: Send OTP
-async function handleSendOtp(e) {
+// Modal Sign In (Unified for Customer & Admin)
+async function handleModalSignIn(e) {
   if (e) e.preventDefault();
   const alertBox = document.getElementById('modalAlertBox');
   if (alertBox) alertBox.style.display = 'none';
 
-  let targetVal = '';
-  if (modalAuthChannel === 'phone') {
-    targetVal = (document.getElementById('otpPhoneInput')?.value || '').trim();
-    targetVal = targetVal.replace(/\D/g, '');
-    if (targetVal.length > 10 && targetVal.startsWith('91')) targetVal = targetVal.slice(-10);
-    if (targetVal.length !== 10) {
-      alert('Please enter a valid 10-digit Indian mobile number.');
-      return;
-    }
-  } else {
-    targetVal = (document.getElementById('otpEmailInput')?.value || '').trim();
-    if (!targetVal || !targetVal.includes('@') || !targetVal.includes('.')) {
-      alert('Please enter a valid email address.');
-      return;
-    }
+  const identifier = (document.getElementById('modalSignInIdent')?.value || '').trim();
+  const password = (document.getElementById('modalSignInPass')?.value || '');
+
+  if (!identifier || !password) {
+    showModalAlert('Please enter your mobile/email and password.', 'error');
+    return;
   }
 
-  modalAuthTarget = targetVal;
-  const btn = document.getElementById('sendOtpBtn');
+  const btn = document.getElementById('modalBtnSignIn');
   btn.disabled = true;
-  btn.textContent = 'Sending OTP...';
+  btn.textContent = 'Signing in...';
 
   try {
-    const res = await fetch('/api/auth/send-otp', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        target: modalAuthTarget,
-        type: modalAuthChannel
-      })
+      body: JSON.stringify({ identifier, password })
     });
     const data = await res.json();
 
     if (data.success) {
-      isTargetExistingUser = data.is_existing;
-
-      // Transition to Step 2
-      document.getElementById('otpStepSend').style.display = 'none';
-      document.getElementById('otpStepVerify').style.display = 'block';
-      document.getElementById('displayTargetPhone').textContent = data.target_masked || modalAuthTarget;
-
-      // Show/hide new user fields
-      const newFields = document.getElementById('newUserFields');
-      if (isTargetExistingUser) {
-        if (newFields) newFields.style.display = 'none';
-        document.getElementById('verifyOtpHeading').textContent = `Welcome back, ${data.user_name || 'Customer'}!`;
-      } else {
-        if (newFields) newFields.style.display = 'block';
-        document.getElementById('verifyOtpHeading').textContent = 'Enter OTP & Details to Complete Signup';
+      if (data.is_admin) {
+        window.location.href = data.redirect || '/admin/dashboard';
+        return;
       }
+      currentUser = data.user;
+      renderUserAuthNav();
+      prefillCustomerForm();
+      closeAuthModal();
+      showToast(`🎉 Welcome back, ${currentUser.name}!`);
 
-      // Auto-fill OTP field if in demo/instant mode (e.g., initial Vercel deploy)
-      if (data.demo_mode && data.demo_otp) {
-        const dInput = document.getElementById('otpDigitInput');
-        if (dInput) dInput.value = data.demo_otp;
+      if (pendingCheckout) {
+        pendingCheckout = false;
+        openCart();
       }
-
-      const vAlert = document.getElementById('modalVerifyAlertBox');
-      if (vAlert) {
-        vAlert.style.display = 'block';
-        vAlert.style.background = '#f0fdf4';
-        vAlert.style.border = '1px solid #86efac';
-        vAlert.style.color = '#166534';
-        let alertHtml = `✓ ${data.message}`;
-        if (data.demo_mode && data.demo_otp) {
-          alertHtml = `⚡ <b>Verification Code:</b> <span style="font-size:16px; font-weight:800; letter-spacing:2px; background:#fff; padding:2px 8px; border-radius:4px; border:1px solid #86efac; color:#15803d;">${data.demo_otp}</span> <small style="display:block; color:#166534; margin-top:3px;">(Auto-filled for instant verification on Vercel)</small>`;
-        }
-        if (data.is_admin) {
-          alertHtml += `<div style="margin-top:8px; padding:6px 10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:12px; color:#9a3412;">👑 <b>Store Owner:</b> <a href="/admin/login" style="color:#c2410c; font-weight:700; text-decoration:underline;">Click here to Direct Login with Password</a></div>`;
-        }
-        vAlert.innerHTML = alertHtml;
-      }
-
-      startResendCountdown();
     } else {
-      if (data.provider_unconfigured) {
-        if (alertBox) {
-          alertBox.style.display = 'block';
-          alertBox.style.background = '#f0f9ff';
-          alertBox.style.border = '1px solid #bae6fd';
-          alertBox.style.color = '#0369a1';
-          alertBox.innerHTML = `⚙️ <b>Provider Notice:</b> ${data.error}`;
-        } else {
-          alert(`Provider Notice: ${data.error}`);
-        }
-      } else {
-        alert(data.error || 'Failed to send OTP.');
-      }
+      showModalAlert(data.error || 'Invalid credentials.', 'error');
     }
   } catch (err) {
-    alert('Network error sending OTP. Please check your connection.');
+    showModalAlert('Network error signing in. Please check connection.', 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Send OTP';
+    btn.textContent = 'Sign In';
   }
 }
 
-function startResendCountdown() {
-  let seconds = 45;
-  const resendBtn = document.getElementById('resendOtpBtn');
-  const timerSpan = document.getElementById('resendTimer');
-  if (resendBtn) {
-    resendBtn.style.pointerEvents = 'none';
-    resendBtn.style.color = '#767676';
-  }
-
-  clearInterval(resendTimerInterval);
-  resendTimerInterval = setInterval(() => {
-    seconds--;
-    if (seconds > 0) {
-      if (timerSpan) timerSpan.textContent = `(${seconds}s)`;
-    } else {
-      clearInterval(resendTimerInterval);
-      if (timerSpan) timerSpan.textContent = '';
-      if (resendBtn) {
-        resendBtn.style.pointerEvents = 'auto';
-        resendBtn.style.color = '#007185';
-      }
-    }
-  }, 1000);
-}
-
-// Step 2: Verify OTP & Login/Signup
-async function handleVerifyOtp(e) {
+// Modal Create Account (Sign Up)
+async function handleModalSignUp(e) {
   if (e) e.preventDefault();
-  const otpCode = document.getElementById('otpDigitInput').value.trim();
-  const name = document.getElementById('newUserName')?.value.trim() || '';
+  const alertBox = document.getElementById('modalAlertBox');
+  if (alertBox) alertBox.style.display = 'none';
 
-  if (otpCode.length !== 6 || !/^\d+$/.test(otpCode)) {
-    alert('Please enter the 6-digit numeric OTP code.');
+  const name = (document.getElementById('modalSignUpName')?.value || '').trim();
+  const identifier = (document.getElementById('modalSignUpIdent')?.value || '').trim();
+  const password = (document.getElementById('modalSignUpPass')?.value || '');
+
+  if (!name) {
+    showModalAlert('Please enter your full name.', 'error');
+    return;
+  }
+  if (!identifier) {
+    showModalAlert('Please enter your 10-digit mobile number or email.', 'error');
+    return;
+  }
+  if (!password || password.length < 4) {
+    showModalAlert('Password must be at least 4 characters long.', 'error');
     return;
   }
 
-  if (!isTargetExistingUser && !name) {
-    alert('Please enter your Full Name to complete signup.');
-    return;
-  }
-
-  const btn = document.getElementById('verifyOtpBtn');
+  const btn = document.getElementById('modalBtnSignUp');
   btn.disabled = true;
-  btn.textContent = 'Verifying...';
+  btn.textContent = 'Creating account...';
 
   try {
-    const res = await fetch('/api/auth/verify-otp', {
+    const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        target: modalAuthTarget,
-        type: modalAuthChannel,
-        otp_code: otpCode,
-        name: name
-      })
+      body: JSON.stringify({ name, identifier, password })
     });
+    const data = await res.json();
+
+    if (data.success) {
+      currentUser = data.user;
+      renderUserAuthNav();
+      prefillCustomerForm();
+      closeAuthModal();
+      showToast(`🎉 Account created! Welcome, ${currentUser.name}!`);
+
+      if (pendingCheckout) {
+        pendingCheckout = false;
+        openCart();
+      }
+    } else {
+      showModalAlert(data.error || 'Failed to create account.', 'error');
+    }
+  } catch (err) {
+    showModalAlert('Network error creating account. Please try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create your account';
+  }
+}
+
+function showModalAlert(msg, type = 'error') {
+  const box = document.getElementById('modalAlertBox');
+  if (!box) return;
+  box.style.display = 'block';
+  if (type === 'success') {
+    box.style.background = '#f0fdf4';
+    box.style.border = '1px solid #86efac';
+    box.style.color = '#166534';
+  } else {
+    box.style.background = '#fef2f2';
+    box.style.border = '1px solid #fca5a5';
+    box.style.color = '#991b1b';
+  }
+  box.innerHTML = msg;
+}
     const data = await res.json();
 
     if (data.success) {
@@ -497,7 +450,7 @@ async function handleLogout() {
 // ---------------- MY ORDERS MODAL ---------------- //
 async function openMyOrdersModal() {
   if (!currentUser) {
-    openAuthModal('Please login via OTP to view orders.');
+    openAuthModal('Please Sign In to view your orders.');
     return;
   }
   const modal = document.getElementById('myOrdersModal');
@@ -982,7 +935,7 @@ async function submitOrder(e) {
   if (!currentUser) {
     pendingCheckout = true;
     closeCart();
-    openAuthModal('⚠️ Order karne ke liye Mobile OTP verification jaruri hai.');
+    openAuthModal('⚠️ Order place karne ke liye Sign In ya Create Account jaruri hai.');
     return;
   }
 
@@ -1044,7 +997,7 @@ async function submitOrder(e) {
       if (data.requires_auth) {
         pendingCheckout = true;
         closeCart();
-        openAuthModal('⚠️ Order karne ke liye Mobile OTP verification jaruri hai.');
+        openAuthModal('⚠️ Order place karne ke liye Sign In ya Create Account jaruri hai.');
       } else {
         alert('Error placing order: ' + (data.error || 'Please try again.'));
       }

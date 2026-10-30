@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shuddh Seva Foods — Sign In / Sign Up</title>
+  <title>Shuddh Seva Foods — Sign In / Create Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -19,17 +19,17 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px 40px;
+      padding: 28px 16px 40px;
     }
     .auth-logo {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       text-decoration: none;
       display: inline-block;
     }
     .auth-logo-text {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 700;
       color: #4a210f;
       letter-spacing: 0.5px;
@@ -40,7 +40,7 @@
     .auth-logo-sub {
       display: block;
       font-size: 11px;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       color: #176b3b;
       font-weight: 700;
       text-transform: uppercase;
@@ -48,36 +48,28 @@
     }
     .auth-card {
       width: 100%;
-      max-width: 400px;
+      max-width: 410px;
       border: 1px solid #d5d9d9;
-      border-radius: 12px;
-      padding: 26px 30px;
+      border-radius: 14px;
+      padding: 28px 32px;
       background: #fff;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
-    .auth-heading {
-      font-size: 26px;
-      font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 18px;
-      color: #0f1111;
-    }
-
-    /* Option A & B Tabs (Amazon style) */
+    
+    /* Navigation Tabs: Sign In / Create Account */
     .auth-tab-bar {
       display: flex;
       border-bottom: 2px solid #e7e7e7;
-      margin-bottom: 20px;
-      gap: 10px;
+      margin-bottom: 22px;
     }
     .auth-tab-btn {
       flex: 1;
-      padding: 10px 8px;
+      padding: 11px 8px;
       background: none;
       border: none;
       border-bottom: 3px solid transparent;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: #565959;
       cursor: pointer;
@@ -103,26 +95,12 @@
       margin-bottom: 6px;
       color: #0f1111;
     }
-    .phone-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .country-code-pill {
-      background: #f0f2f2;
-      border: 1px solid #888c8c;
-      border-radius: 6px;
-      height: 38px;
-      padding: 0 12px;
-      font-size: 13px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      color: #0f1111;
+    .input-wrapper {
+      position: relative;
     }
     .input-text {
       width: 100%;
-      height: 38px;
+      height: 40px;
       border: 1px solid #888c8c;
       border-radius: 6px;
       padding: 6px 12px;
@@ -135,13 +113,17 @@
       border-color: #e77600;
       box-shadow: 0 0 3px 2px rgba(228,121,17,.5);
     }
-    .otp-large-input {
-      height: 48px;
-      font-size: 24px;
-      letter-spacing: 10px;
-      text-align: center;
-      font-weight: 800;
-      font-family: monospace;
+    .toggle-pass-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
     }
     .btn-amazon-primary {
       width: 100%;
@@ -151,21 +133,21 @@
       box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
       color: #0f1111;
       font-size: 14px;
-      height: 38px;
+      height: 40px;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       transition: background 0.15s;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .btn-amazon-primary:hover {
       background: #f7ca00;
       border-color: #f2c200;
     }
     .disclaimer-text {
-      font-size: 11px;
+      font-size: 11.5px;
       color: #565959;
       margin-top: 18px;
       line-height: 1.5;
@@ -180,10 +162,10 @@
     }
     .divider-row {
       width: 100%;
-      max-width: 400px;
+      max-width: 410px;
       text-align: center;
       position: relative;
-      margin: 16px 0;
+      margin: 18px 0;
     }
     .divider-row::before {
       content: "";
@@ -196,7 +178,7 @@
     }
     .divider-row span {
       background: #f7f5f0;
-      padding: 0 10px;
+      padding: 0 12px;
       position: relative;
       z-index: 2;
       color: #767676;
@@ -205,14 +187,14 @@
     }
     .btn-amazon-secondary {
       width: 100%;
-      max-width: 400px;
+      max-width: 410px;
       background: #fff;
       border: 1px solid #d5d9d9;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(15,17,17,.1);
       color: #0f1111;
       font-size: 13px;
-      height: 36px;
+      height: 38px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
@@ -225,13 +207,13 @@
       background: #f7fafa;
     }
 
-    /* Message Alert Boxes */
+    /* Alert Boxes */
     .alert-box {
       border-radius: 8px;
       padding: 12px 14px;
       margin-bottom: 16px;
       font-size: 13px;
-      line-height: 1.4;
+      line-height: 1.45;
       display: none;
     }
     .alert-box.success {
@@ -244,11 +226,6 @@
       border: 1px solid #fca5a5;
       color: #991b1b;
     }
-    .alert-box.info {
-      background: #f0f9ff;
-      border: 1px solid #bae6fd;
-      color: #0369a1;
-    }
 
     .footer-links {
       border-top: 1px solid #e0dbd1;
@@ -260,7 +237,7 @@
     }
     .footer-links a {
       color: #007185;
-      font-size: 11px;
+      font-size: 11.5px;
       margin: 0 10px;
       text-decoration: none;
     }
@@ -278,119 +255,114 @@
 <body>
 
   <!-- Top Logo -->
-  <a href="/" class="auth-logo">
+  <a href="/" class="auth-logo" title="Shuddh Seva Foods Home">
     <div class="auth-logo-text">SHUDDH <span>SEVA</span></div>
     <span class="auth-logo-sub">FOODS • PURE & NATURAL</span>
   </a>
 
-  <!-- ================= CARD 1: REQUEST OTP (OPTION A & B) ================= -->
-  <div class="auth-card" id="cardSendOtp">
-    <h1 class="auth-heading" id="authTitle">Sign in / Sign up</h1>
-
-    <!-- Tabs for Option A, Option B, and Admin Direct Login -->
+  <!-- Unified Auth Card -->
+  <div class="auth-card">
+    
+    <!-- Tab Navigation -->
     <div class="auth-tab-bar">
-      <button type="button" class="auth-tab-btn active" id="tabMobile" onclick="switchAuthTab('phone')">
-        📱 Mobile OTP
+      <button type="button" class="auth-tab-btn active" id="tabSignIn" onclick="switchAuthMode('signin')">
+        Sign In
       </button>
-      <button type="button" class="auth-tab-btn" id="tabEmail" onclick="switchAuthTab('email')">
-        ✉️ Gmail OTP
+      <button type="button" class="auth-tab-btn" id="tabSignUp" onclick="switchAuthMode('signup')">
+        Create Account
       </button>
-      <a href="/admin/login" class="auth-tab-btn" style="text-decoration:none; color:#c2410c;">
-        👑 Admin
-      </a>
     </div>
 
-    <!-- Alert Box -->
-    <div class="alert-box" id="sendAlertBox"></div>
+    <!-- Alert Box for feedback messages -->
+    <div class="alert-box" id="authAlertBox">
+      {% if error %}
+        <script>
+          window.addEventListener('DOMContentLoaded', () => {
+            showAlert("{{ error }}", "error");
+          });
+        </script>
+      {% endif %}
+    </div>
 
-    <form onsubmit="handleSendOtpSubmit(event)">
-      <!-- OPTION A: Mobile Input -->
-      <div id="phoneInputGroup">
+    <!-- ================= FORM 1: SIGN IN ================= -->
+    <div id="sectionSignIn">
+      <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 16px; color:#0f1111;">Sign In</h1>
+      <form id="formSignIn" method="POST" action="/login" onsubmit="handleSignInSubmit(event)">
+        <input type="hidden" name="action" value="login">
+
         <div class="form-group">
-          <label for="inputMobile">Enter Indian mobile number</label>
-          <div class="phone-row">
-            <div class="country-code-pill">IN +91</div>
-            <input type="tel" id="inputMobile" class="input-text" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" autofocus>
+          <label for="signinIdentifier">Mobile number or Email</label>
+          <input type="text" id="signinIdentifier" name="identifier" class="input-text" placeholder="10-digit mobile number or email" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="signinPassword">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="signinPassword" name="password" class="input-text" placeholder="Enter password" required>
+            <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('signinPassword', this)">👁</button>
           </div>
-          <small style="color:#666; font-size:11px; margin-top:4px; display:block;">
-            A real 6-digit verification code will be sent via SMS.
-          </small>
         </div>
-      </div>
 
-      <!-- OPTION B: Email Input -->
-      <div id="emailInputGroup" style="display: none;">
-        <div class="form-group">
-          <label for="inputEmail">Enter email address</label>
-          <input type="email" id="inputEmail" class="input-text" placeholder="name@example.com">
-          <small style="color:#666; font-size:11px; margin-top:4px; display:block;">
-            A real 6-digit verification code will be sent to your Gmail/Email inbox.
-          </small>
+        <button type="submit" class="btn-amazon-primary" id="btnSignInSubmit">
+          Sign In
+        </button>
+
+        <p class="disclaimer-text">
+          By signing in, you agree to Shuddh Seva Foods' <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
+        </p>
+
+        <div style="margin-top: 20px; border-top: 1px solid #e7e7e7; padding-top: 16px; text-align: center;">
+          <span style="color:#565959; font-size:12px;">New to Shuddh Seva Foods?</span><br>
+          <button type="button" onclick="switchAuthMode('signup')" style="background:none; border:none; color:#007185; font-size:13px; font-weight:700; cursor:pointer; margin-top:4px;">
+            Create your Shuddh Seva account ▸
+          </button>
         </div>
-      </div>
-
-      <!-- Optional Name field for new registration -->
-      <div class="form-group" id="optionalNameGroup" style="margin-top: 10px;">
-        <label for="inputCustomerName">Your Name <span style="font-weight:400; color:#666;">(For new signup)</span></label>
-        <input type="text" id="inputCustomerName" class="input-text" placeholder="First and last name">
-      </div>
-
-      <button type="submit" class="btn-amazon-primary" id="btnSendOtp">
-        Send OTP
-      </button>
-
-      <p class="disclaimer-text">
-        By continuing, you agree to Shuddh Seva Foods' <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
-      </p>
-    </form>
-  </div>
-
-  <!-- ================= CARD 2: VERIFY OTP ================= -->
-  <div class="auth-card" id="cardVerifyOtp" style="display: none;">
-    <h1 class="auth-heading" style="font-size:24px;">Verification Required</h1>
-
-    <div class="alert-box" id="verifyAlertBox"></div>
-
-    <p style="font-size: 13px; margin-bottom: 16px; color:#0f1111;">
-      We've sent a 6-digit verification code (OTP) to: <br>
-      <b id="targetDisplay" style="color:#4a210f; font-size:14px;">---</b> 
-      (<a href="#" onclick="showSendOtpCard(); return false;" style="color:#007185; text-decoration:none;">Change</a>)
-    </p>
-
-    <form onsubmit="handleVerifyOtpSubmit(event)">
-      <div class="form-group">
-        <label for="inputOtpCode" style="display:flex; justify-content:space-between; align-items:center;">
-          <span>Enter 6-digit OTP</span>
-          <a href="#" id="resendOtpBtn" onclick="handleResendOtp(event)" style="color:#007185; font-size:12px; text-decoration:none;">
-            Resend OTP <span id="resendTimerSpan"></span>
-          </a>
-        </label>
-        <input type="text" id="inputOtpCode" class="input-text otp-large-input" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" required autofocus>
-      </div>
-
-      <p style="font-size:11px; color:#767676; margin-top:-6px; margin-bottom:14px;">
-        ⏱ The code is valid for 5 minutes. Max 5 attempts.
-      </p>
-
-      <button type="submit" class="btn-amazon-primary" id="btnVerifyOtp">
-        Verify & Continue
-      </button>
-
-      <p class="disclaimer-text">
-        🔒 Never share your OTP with anyone. Shuddh Seva Foods representatives will never ask for your verification code.
-      </p>
-    </form>
-  </div>
-
-  <!-- Store Owner Direct Access Notice -->
-  <div style="width: 100%; max-width: 400px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:12px 16px; margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-    <div style="font-size:12px; color:#9a3412;">
-      <b>Store Owner / Ankit?</b><br>
-      Direct access without OTP verification.
+      </form>
     </div>
-    <a href="/admin/login" style="background:#ea580c; color:#fff; padding:7px 14px; border-radius:6px; font-weight:700; font-size:12px; text-decoration:none; white-space:nowrap;">
-      Admin Login 🚀
-    </a>
+
+    <!-- ================= FORM 2: CREATE ACCOUNT (SIGN UP) ================= -->
+    <div id="sectionSignUp" style="display: none;">
+      <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 16px; color:#0f1111;">Create Account</h1>
+      <form id="formSignUp" method="POST" action="/signup" onsubmit="handleSignUpSubmit(event)">
+        <input type="hidden" name="action" value="signup">
+
+        <div class="form-group">
+          <label for="signupName">Your Name</label>
+          <input type="text" id="signupName" name="name" class="input-text" placeholder="First and last name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signupIdentifier">Mobile number or Email</label>
+          <input type="text" id="signupIdentifier" name="identifier" class="input-text" placeholder="10-digit mobile number or email" required>
+          <small style="color:#666; font-size:11px; margin-top:3px; display:block;">We will use this to confirm your spice orders.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="signupPassword" name="password" class="input-text" placeholder="At least 6 characters" minlength="4" required>
+            <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('signupPassword', this)">👁</button>
+          </div>
+          <small style="color:#666; font-size:11px; margin-top:3px; display:block;">🔒 Passwords must be at least 4 characters.</small>
+        </div>
+
+        <button type="submit" class="btn-amazon-primary" id="btnSignUpSubmit">
+          Create your Shuddh Seva account
+        </button>
+
+        <p class="disclaimer-text">
+          By creating an account, you agree to Shuddh Seva Foods' <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.
+        </p>
+
+        <div style="margin-top: 20px; border-top: 1px solid #e7e7e7; padding-top: 16px; text-align: center;">
+          <span style="color:#565959; font-size:12px;">Already have an account?</span><br>
+          <button type="button" onclick="switchAuthMode('signin')" style="background:none; border:none; color:#007185; font-size:13px; font-weight:700; cursor:pointer; margin-top:4px;">
+            Sign in ▸
+          </button>
+        </div>
+      </form>
+    </div>
+
   </div>
 
   <div class="divider-row">
@@ -401,240 +373,170 @@
     Return to Shuddh Seva Store 🛍
   </a>
 
-  <!-- Footer -->
+  <!-- Customer-facing Footer Links -->
   <div class="footer-links">
     <a href="#">Conditions of Use</a>
     <a href="#">Privacy Notice</a>
     <a href="#">Help & Support</a>
-    <a href="/admin/login">Store Admin Portal</a>
   </div>
   <div class="footer-copyright">
     © 2026, Shuddh Seva Foods, Inc. or its affiliates. Jaipur, Rajasthan - 302001.
   </div>
 
   <script>
-    let activeChannel = 'phone'; // 'phone' or 'email'
-    let currentTarget = '';
-    let resendCountdown = 0;
-    let resendTimer = null;
+    let currentMode = 'signin';
 
-    function showAlert(boxId, msg, type = 'error') {
-      const el = document.getElementById(boxId);
+    function showAlert(msg, type = 'error') {
+      const el = document.getElementById('authAlertBox');
       el.className = `alert-box ${type}`;
       el.innerHTML = msg;
       el.style.display = 'block';
     }
 
-    function hideAlert(boxId) {
-      const el = document.getElementById(boxId);
+    function hideAlert() {
+      const el = document.getElementById('authAlertBox');
       el.style.display = 'none';
       el.innerHTML = '';
     }
 
-    function switchAuthTab(type) {
-      activeChannel = type;
-      hideAlert('sendAlertBox');
-      
-      const tabMob = document.getElementById('tabMobile');
-      const tabMail = document.getElementById('tabEmail');
-      const groupMob = document.getElementById('phoneInputGroup');
-      const groupMail = document.getElementById('emailInputGroup');
+    function switchAuthMode(mode) {
+      currentMode = mode;
+      hideAlert();
 
-      if (type === 'phone') {
-        tabMob.classList.add('active');
-        tabMail.classList.remove('active');
-        groupMob.style.display = 'block';
-        groupMail.style.display = 'none';
-        document.getElementById('inputMobile').focus();
+      const tabIn = document.getElementById('tabSignIn');
+      const tabUp = document.getElementById('tabSignUp');
+      const secIn = document.getElementById('sectionSignIn');
+      const secUp = document.getElementById('sectionSignUp');
+
+      if (mode === 'signin') {
+        tabIn.classList.add('active');
+        tabUp.classList.remove('active');
+        secIn.style.display = 'block';
+        secUp.style.display = 'none';
+        document.getElementById('signinIdentifier').focus();
       } else {
-        tabMail.classList.add('active');
-        tabMob.classList.remove('active');
-        groupMail.style.display = 'block';
-        groupMob.style.display = 'none';
-        document.getElementById('inputEmail').focus();
+        tabUp.classList.add('active');
+        tabIn.classList.remove('active');
+        secUp.style.display = 'block';
+        secIn.style.display = 'none';
+        document.getElementById('signupName').focus();
       }
     }
 
-    function showSendOtpCard() {
-      document.getElementById('cardSendOtp').style.display = 'block';
-      document.getElementById('cardVerifyOtp').style.display = 'none';
-      hideAlert('verifyAlertBox');
-      clearInterval(resendTimer);
-    }
-
-    function showVerifyOtpCard(targetMasked) {
-      document.getElementById('cardSendOtp').style.display = 'none';
-      document.getElementById('cardVerifyOtp').style.display = 'block';
-      document.getElementById('targetDisplay').textContent = targetMasked;
-      document.getElementById('inputOtpCode').value = '';
-      document.getElementById('inputOtpCode').focus();
-      startResendCountdown(45);
-    }
-
-    function startResendCountdown(seconds) {
-      resendCountdown = seconds;
-      const link = document.getElementById('resendOtpBtn');
-      const span = document.getElementById('resendTimerSpan');
-      link.style.pointerEvents = 'none';
-      link.style.color = '#767676';
-
-      clearInterval(resendTimer);
-      resendTimer = setInterval(() => {
-        resendCountdown--;
-        if (resendCountdown > 0) {
-          span.textContent = `(${resendCountdown}s)`;
-        } else {
-          clearInterval(resendTimer);
-          span.textContent = '';
-          link.style.pointerEvents = 'auto';
-          link.style.color = '#007185';
-        }
-      }, 1000);
-    }
-
-    // Step 1: Send OTP
-    async function handleSendOtpSubmit(e) {
-      e.preventDefault();
-      hideAlert('sendAlertBox');
-
-      let targetVal = '';
-      if (activeChannel === 'phone') {
-        targetVal = document.getElementById('inputMobile').value.trim();
-        targetVal = targetVal.replace(/\D/g, '');
-        if (targetVal.length > 10 && targetVal.startsWith('91')) targetVal = targetVal.slice(-10);
-        if (targetVal.length !== 10) {
-          showAlert('sendAlertBox', 'Please enter a valid 10-digit mobile number.', 'error');
-          return;
-        }
+    function togglePasswordVisibility(inputId, btn) {
+      const field = document.getElementById(inputId);
+      if (field.type === 'password') {
+        field.type = 'text';
+        btn.textContent = '🔒';
       } else {
-        targetVal = document.getElementById('inputEmail').value.trim();
-        if (!targetVal || !targetVal.includes('@') || !targetVal.includes('.')) {
-          showAlert('sendAlertBox', 'Please enter a valid email address.', 'error');
-          return;
-        }
-      }
-
-      currentTarget = targetVal;
-      const btn = document.getElementById('btnSendOtp');
-      btn.disabled = true;
-      btn.textContent = 'Sending OTP...';
-
-      try {
-        const res = await fetch('/api/auth/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            target: currentTarget,
-            type: activeChannel
-          })
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          showVerifyOtpCard(data.target_masked);
-          if (data.demo_mode && data.demo_otp) {
-            document.getElementById('inputOtpCode').value = data.demo_otp;
-            let msg = `⚡ <b>Verification Code:</b> <span style="font-size:18px; font-weight:800; letter-spacing:2px; background:#fff; padding:2px 10px; border-radius:6px; border:1px solid #86efac; color:#15803d; display:inline-block; margin:4px 0;">${data.demo_otp}</span><br><small style="color:#166534;">(Auto-filled for instant verification on Vercel)</small>`;
-            if (data.is_admin) {
-              msg += `<div style="margin-top:8px; padding:6px 10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:12px; color:#9a3412;">👑 <b>Store Owner Detected!</b> <a href="/admin/login" style="color:#c2410c; font-weight:700; text-decoration:underline;">Click here to Direct Login with Password</a></div>`;
-            }
-            showAlert('verifyAlertBox', msg, 'success');
-          } else {
-            let msg = `✓ ${data.message}`;
-            if (data.is_admin) {
-              msg += `<div style="margin-top:8px; padding:6px 10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; font-size:12px; color:#9a3412;">👑 <b>Store Owner Detected!</b> <a href="/admin/login" style="color:#c2410c; font-weight:700; text-decoration:underline;">Click here to Direct Login with Password</a></div>`;
-            }
-            showAlert('verifyAlertBox', msg, 'success');
-          }
-        } else {
-          if (data.provider_unconfigured) {
-            showAlert('sendAlertBox', `⚙️ <b>Provider Notice:</b> ${data.error}`, 'info');
-          } else {
-            showAlert('sendAlertBox', data.error || 'Failed to send OTP. Please check details.', 'error');
-          }
-        }
-      } catch (err) {
-        showAlert('sendAlertBox', 'Network error. Please try again.', 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Send OTP';
+        field.type = 'password';
+        btn.textContent = '👁';
       }
     }
 
-    // Step 2: Verify OTP
-    async function handleVerifyOtpSubmit(e) {
+    // Handle Sign In (Unified for Customer & Admin)
+    async function handleSignInSubmit(e) {
       e.preventDefault();
-      hideAlert('verifyAlertBox');
+      hideAlert();
 
-      const otpCode = document.getElementById('inputOtpCode').value.trim();
-      const customerName = document.getElementById('inputCustomerName').value.trim();
+      const identifier = document.getElementById('signinIdentifier').value.trim();
+      const password = document.getElementById('signinPassword').value;
 
-      if (otpCode.length !== 6 || !/^\d+$/.test(otpCode)) {
-        showAlert('verifyAlertBox', 'Please enter the full 6-digit OTP code received.', 'error');
+      if (!identifier || !password) {
+        showAlert('Please enter both your mobile/email and password.', 'error');
         return;
       }
 
-      const btn = document.getElementById('btnVerifyOtp');
+      const btn = document.getElementById('btnSignInSubmit');
       btn.disabled = true;
-      btn.textContent = 'Verifying...';
+      btn.textContent = 'Signing in...';
 
       try {
-        const res = await fetch('/api/auth/verify-otp', {
+        const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            target: currentTarget,
-            type: activeChannel,
-            otp_code: otpCode,
-            name: customerName
-          })
+          body: JSON.stringify({ identifier, password })
         });
 
         const data = await res.json();
         if (data.success) {
-          showAlert('verifyAlertBox', `✓ Verified! Redirecting...`, 'success');
+          showAlert(`✓ ${data.message || 'Login successful!'} Redirecting...`, 'success');
           setTimeout(() => {
-            // Check if there was a saved redirect or return to home
-            const nextUrl = new URLSearchParams(window.location.search).get('next') || '/';
-            window.location.href = nextUrl;
-          }, 800);
+            const nextParam = new URLSearchParams(window.location.search).get('next');
+            window.location.href = data.redirect || nextParam || '/';
+          }, 400);
         } else {
-          showAlert('verifyAlertBox', data.error || 'Verification failed. Please try again.', 'error');
+          showAlert(data.error || 'Invalid mobile number/email or password.', 'error');
         }
       } catch (err) {
-        showAlert('verifyAlertBox', 'Network error during verification.', 'error');
+        // Fallback to standard form submission
+        document.getElementById('formSignIn').submit();
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Verify & Continue';
+        btn.textContent = 'Sign In';
       }
     }
 
-    // Resend OTP
-    async function handleResendOtp(e) {
+    // Handle Create Account (Sign Up)
+    async function handleSignUpSubmit(e) {
       e.preventDefault();
-      if (resendCountdown > 0) return;
-      hideAlert('verifyAlertBox');
+      hideAlert();
+
+      const name = document.getElementById('signupName').value.trim();
+      const identifier = document.getElementById('signupIdentifier').value.trim();
+      const password = document.getElementById('signupPassword').value;
+
+      if (!name) {
+        showAlert('Please enter your full name.', 'error');
+        return;
+      }
+      if (!identifier) {
+        showAlert('Please enter your mobile number or email.', 'error');
+        return;
+      }
+      if (!password || password.length < 4) {
+        showAlert('Password must be at least 4 characters long.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btnSignUpSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
 
       try {
-        const res = await fetch('/api/auth/send-otp', {
+        const res = await fetch('/api/auth/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            target: currentTarget,
-            type: activeChannel
-          })
+          body: JSON.stringify({ name, identifier, password })
         });
+
         const data = await res.json();
         if (data.success) {
-          showAlert('verifyAlertBox', `✓ A new 6-digit OTP has been sent.`, 'success');
-          startResendCountdown(45);
+          showAlert(`🎉 ${data.message || 'Account created successfully!'} Redirecting...`, 'success');
+          setTimeout(() => {
+            const nextParam = new URLSearchParams(window.location.search).get('next');
+            window.location.href = data.redirect || nextParam || '/';
+          }, 400);
         } else {
-          showAlert('verifyAlertBox', data.error || 'Could not resend OTP.', 'error');
+          showAlert(data.error || 'Could not create account. Please check details.', 'error');
         }
       } catch (err) {
-        showAlert('verifyAlertBox', 'Network error requesting OTP resend.', 'error');
+        // Fallback to standard form submission
+        document.getElementById('formSignUp').submit();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create your Shuddh Seva account';
       }
     }
+
+    // Check URL parameters for active tab
+    document.addEventListener('DOMContentLoaded', () => {
+      const path = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      if (path === '/signup' || params.get('tab') === 'signup') {
+        switchAuthMode('signup');
+      }
+    });
   </script>
 </body>
 </html>

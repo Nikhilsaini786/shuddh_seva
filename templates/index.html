@@ -405,101 +405,84 @@
 
   <!-- ================= MODALS ================= -->
 
-  <!-- 1. Customer OTP Verification Modal (Option A: Mobile & Option B: Email) -->
+  <!-- 1. Customer Sign In & Create Account Modal (Password-based / No OTP) -->
   <div class="modal-overlay" id="authModal">
-    <div class="modal-dialog" style="max-width:400px; padding:24px 26px; border:1px solid #d5d9d9; border-radius:12px; background:#fff;">
+    <div class="modal-dialog" style="max-width:410px; padding:26px 28px; border:1px solid #d5d9d9; border-radius:14px; background:#fff; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
       <button type="button" class="modal-close-btn" onclick="closeAuthModal()">×</button>
       
-      <div id="authReasonBox" class="auth-notice-banner" style="display:none; margin-bottom:14px;"></div>
+      <div id="authReasonBox" class="auth-notice-banner" style="display:none; margin-bottom:14px; background:#fff8e1; border:1px solid #ffe082; padding:10px 14px; border-radius:8px; font-size:12.5px; color:#b78103; font-weight:600;"></div>
 
       <div style="text-align:center; margin-bottom:16px;">
-        <div style="font-size:22px; font-weight:800; color:#4a210f;">SHUDDH <span style="color:#c8a34b;">SEVA</span></div>
+        <div style="font-size:22px; font-weight:800; color:#4a210f; font-family:'Plus Jakarta Sans', sans-serif;">SHUDDH <span style="color:#c8a34b;">SEVA</span></div>
         <small style="letter-spacing:2px; font-size:10px; color:#176b3b; font-weight:700;">FOODS • PURE & NATURAL</small>
       </div>
 
-      <!-- Step 1: Send OTP with Option A / Option B tabs -->
-      <div id="otpStepSend">
-        <h2 style="font-size:20px; font-weight:700; margin-bottom:12px; color:#0f1111;">Sign In or Register</h2>
+      <!-- Sign In / Sign Up Modal Tabs -->
+      <div style="display:flex; border-bottom:2px solid #e7e7e7; margin-bottom:18px;">
+        <button type="button" id="modalTabSignIn" onclick="switchModalAuthMode('signin')" style="flex:1; padding:9px 6px; font-size:13px; font-weight:700; border:none; border-bottom:3px solid #e47911; background:none; cursor:pointer; color:#4a210f;">
+          Sign In
+        </button>
+        <button type="button" id="modalTabSignUp" onclick="switchModalAuthMode('signup')" style="flex:1; padding:9px 6px; font-size:13px; font-weight:700; border:none; border-bottom:3px solid transparent; background:none; cursor:pointer; color:#767676;">
+          Create Account
+        </button>
+      </div>
 
-        <div style="display:flex; border-bottom:2px solid #e7e7e7; margin-bottom:16px;">
-          <button type="button" id="modalTabPhone" onclick="switchModalAuthTab('phone')" style="flex:1; padding:8px 6px; font-size:12px; font-weight:700; border:none; border-bottom:3px solid #e47911; background:none; cursor:pointer; color:#4a210f;">
-            📱 Mobile OTP
-          </button>
-          <button type="button" id="modalTabEmail" onclick="switchModalAuthTab('email')" style="flex:1; padding:8px 6px; font-size:12px; font-weight:700; border:none; border-bottom:3px solid transparent; background:none; cursor:pointer; color:#767676;">
-            ✉️ Email OTP
-          </button>
-        </div>
+      <div id="modalAlertBox" style="display:none; padding:10px 14px; border-radius:6px; margin-bottom:14px; font-size:12.5px; line-height:1.4;"></div>
 
-        <div id="modalAlertBox" style="display:none; padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:12px;"></div>
-
-        <form onsubmit="handleSendOtp(event)">
-          <!-- Mobile Input -->
-          <div id="modalGroupPhone" class="form-group" style="margin-bottom:14px;">
-            <label style="font-weight:700; font-size:13px; display:block; margin-bottom:4px;">Indian Mobile Number</label>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="background:#f0f2f2; border:1px solid #888c8c; border-radius:4px; height:36px; padding:0 10px; font-weight:700; font-size:13px; display:flex; align-items:center;">IN +91</span>
-              <input type="tel" id="otpPhoneInput" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" autofocus style="flex:1; height:36px; border:1px solid #888c8c; border-radius:4px; padding:3px 10px; font-size:14px; font-weight:600; outline:none;">
-            </div>
-            <small style="font-size:11px; color:#666; margin-top:4px; display:block;">Real 6-digit OTP will be sent via SMS.</small>
+      <!-- Modal Sign In Section -->
+      <div id="modalSectionSignIn">
+        <form onsubmit="handleModalSignIn(event)">
+          <div class="form-group" style="margin-bottom:14px; text-align:left;">
+            <label style="font-weight:700; font-size:12.5px; display:block; margin-bottom:4px; color:#0f1111;">Mobile number or Email</label>
+            <input type="text" id="modalSignInIdent" placeholder="10-digit mobile number or email" required autofocus style="width:100%; height:38px; border:1px solid #888c8c; border-radius:6px; padding:4px 12px; font-size:14px; outline:none;">
           </div>
 
-          <!-- Email Input -->
-          <div id="modalGroupEmail" class="form-group" style="display:none; margin-bottom:14px;">
-            <label style="font-weight:700; font-size:13px; display:block; margin-bottom:4px;">Email Address</label>
-            <input type="email" id="otpEmailInput" placeholder="name@example.com" style="width:100%; height:36px; border:1px solid #888c8c; border-radius:4px; padding:3px 10px; font-size:14px; font-weight:600; outline:none;">
-            <small style="font-size:11px; color:#666; margin-top:4px; display:block;">Real 6-digit OTP will be sent to your Gmail/Email inbox.</small>
+          <div class="form-group" style="margin-bottom:14px; text-align:left;">
+            <label style="font-weight:700; font-size:12.5px; display:block; margin-bottom:4px; color:#0f1111;">Password</label>
+            <input type="password" id="modalSignInPass" placeholder="Enter password" required style="width:100%; height:38px; border:1px solid #888c8c; border-radius:6px; padding:4px 12px; font-size:14px; outline:none;">
           </div>
 
-          <button type="submit" id="sendOtpBtn" style="width:100%; height:36px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111;">
-            Send OTP
+          <button type="submit" id="modalBtnSignIn" style="width:100%; height:38px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111; margin-top:4px;">
+            Sign In
           </button>
 
-          <p style="font-size:11px; color:#565959; margin-top:14px; line-height:1.5;">
-            By continuing, you agree to Shuddh Seva Foods' <a href="#" style="color:#007185; text-decoration:none;">Conditions of Use</a>.
-          </p>
-
-          <div style="margin-top:14px; border-top:1px solid #e7e7e7; padding-top:10px; text-align:center;">
-            <a href="/login" style="color:#007185; text-decoration:none; font-size:12px; font-weight:600;">
-              Open Dedicated Sign-In Page ▸
-            </a>
+          <div style="margin-top:14px; text-align:center;">
+            <span style="color:#565959; font-size:11.5px;">New customer?</span>
+            <button type="button" onclick="switchModalAuthMode('signup')" style="background:none; border:none; color:#007185; font-size:12px; font-weight:700; cursor:pointer; margin-left:4px;">
+              Create your account ▸
+            </button>
           </div>
         </form>
       </div>
 
-      <!-- Step 2: Enter 6-digit OTP -->
-      <div id="otpStepVerify" style="display:none;">
-        <h2 style="font-size:20px; font-weight:700; margin-bottom:8px; color:#0f1111;" id="verifyOtpHeading">Verification Required</h2>
-        <p style="font-size:12px; margin-bottom:12px; color:#0f1111;">
-          We've sent a 6-digit OTP to <b id="displayTargetPhone" style="color:#4a210f;">---</b> 
-          (<a href="#" onclick="resetOtpForm(); return false;" style="color:#007185; text-decoration:none;">Change</a>)
-        </p>
-
-        <div id="modalVerifyAlertBox" style="display:none; padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:12px;"></div>
-
-        <form onsubmit="handleVerifyOtp(event)">
-          <div class="form-group" style="margin-bottom:12px;">
-            <label style="font-size:13px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:4px;">
-              <span>Enter 6-digit OTP</span>
-              <a href="#" id="resendOtpBtn" onclick="handleSendOtp(event)" style="color:#007185; font-size:11px; text-decoration:none;">
-                Resend OTP <span id="resendTimer"></span>
-              </a>
-            </label>
-            <input type="text" id="otpDigitInput" class="otp-digit-input" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" required autofocus style="height:44px; font-size:22px; letter-spacing:8px; text-align:center; font-weight:800; font-family:monospace; border:1px solid #888c8c; border-radius:6px; width:100%;">
+      <!-- Modal Create Account (Sign Up) Section -->
+      <div id="modalSectionSignUp" style="display:none;">
+        <form onsubmit="handleModalSignUp(event)">
+          <div class="form-group" style="margin-bottom:12px; text-align:left;">
+            <label style="font-weight:700; font-size:12.5px; display:block; margin-bottom:4px; color:#0f1111;">Your Name</label>
+            <input type="text" id="modalSignUpName" placeholder="First and last name" required style="width:100%; height:38px; border:1px solid #888c8c; border-radius:6px; padding:4px 12px; font-size:14px; outline:none;">
           </div>
 
-          <!-- New User Additional Details (shown only if first-time user) -->
-          <div id="newUserFields" style="display:none; border-top:1px solid #e7e7e7; padding-top:12px; margin-top:12px;">
-            <h4 style="font-size:13px; color:#0f1111; margin-bottom:8px; font-weight:700;">
-              Your Name (For new signup):
-            </h4>
-            <div class="form-group" style="margin-bottom:10px;">
-              <input type="text" id="newUserName" placeholder="First and last name" style="width:100%; height:34px; border:1px solid #888c8c; border-radius:4px; padding:3px 10px; font-size:13px;">
-            </div>
+          <div class="form-group" style="margin-bottom:12px; text-align:left;">
+            <label style="font-weight:700; font-size:12.5px; display:block; margin-bottom:4px; color:#0f1111;">Mobile number or Email</label>
+            <input type="text" id="modalSignUpIdent" placeholder="10-digit mobile number or email" required style="width:100%; height:38px; border:1px solid #888c8c; border-radius:6px; padding:4px 12px; font-size:14px; outline:none;">
           </div>
 
-          <button type="submit" id="verifyOtpBtn" style="width:100%; height:36px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111; margin-top:8px;">
-            Verify & Continue
+          <div class="form-group" style="margin-bottom:14px; text-align:left;">
+            <label style="font-weight:700; font-size:12.5px; display:block; margin-bottom:4px; color:#0f1111;">Password</label>
+            <input type="password" id="modalSignUpPass" placeholder="At least 4 characters" minlength="4" required style="width:100%; height:38px; border:1px solid #888c8c; border-radius:6px; padding:4px 12px; font-size:14px; outline:none;">
+          </div>
+
+          <button type="submit" id="modalBtnSignUp" style="width:100%; height:38px; background:#ffd814; border:1px solid #fcd200; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 2px 5px rgba(213,217,217,.5); color:#0f1111; margin-top:4px;">
+            Create your account
           </button>
+
+          <div style="margin-top:14px; text-align:center;">
+            <span style="color:#565959; font-size:11.5px;">Already have an account?</span>
+            <button type="button" onclick="switchModalAuthMode('signin')" style="background:none; border:none; color:#007185; font-size:12px; font-weight:700; cursor:pointer; margin-left:4px;">
+              Sign in ▸
+            </button>
+          </div>
         </form>
       </div>
 
@@ -591,13 +574,13 @@
       <h2 style="font-size:22px; color:var(--primary); margin-bottom:4px;">Your Shopping Cart</h2>
       <div id="freeDeliveryNotice" style="padding:8px 12px; border-radius:8px; font-size:12.5px; margin-bottom:14px; text-align:center;"></div>
 
-      <!-- Mandatory OTP Auth Alert in Cart -->
+      <!-- Mandatory Customer Auth Alert in Cart -->
       <div id="checkoutAuthWarning" class="auth-notice-banner" style="display:none;">
         <span style="font-size:20px;">⚠️</span>
         <div>
-          <b>Order karne ke liye Mobile OTP verification jaruri hai!</b><br>
-          <button type="button" onclick="openAuthModal('⚠️ Order karne ke liye Mobile OTP verification jaruri hai.')" style="background:var(--primary); color:#fff; border:none; padding:5px 12px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; margin-top:4px;">
-            Yahan Click Karke Mobile OTP se Login/Signup Karein →
+          <b>Order karne ke liye Sign In / Account create karna jaruri hai!</b><br>
+          <button type="button" onclick="openAuthModal('⚠️ Order place karne ke liye Sign In ya Create Account jaruri hai.')" style="background:var(--primary); color:#fff; border:none; padding:5px 12px; border-radius:6px; font-weight:700; font-size:12px; cursor:pointer; margin-top:4px;">
+            Yahan Click Karke Sign In / Create Account Karein →
           </button>
         </div>
       </div>
