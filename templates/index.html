@@ -172,7 +172,69 @@
 
     <!-- Product Grid -->
     <div class="products-grid" id="productGrid">
-      <!-- Generated dynamically by shop.js -->
+      {% for p in products %}
+      {% set default_size = '100' %}
+      {% set size_data = p.sizes.get(default_size) if (p.sizes and p.sizes is mapping) else none %}
+      {% if not size_data and p.sizes and p.sizes is mapping %}
+        {% set default_size = (p.sizes.keys() | list)[0] %}
+        {% set size_data = p.sizes[default_size] %}
+      {% endif %}
+      <article class="product-card" id="card-{{ p.id }}">
+        <span class="badge-tag">{{ p.badge or '100% Pure' }}</span>
+        
+        <div class="card-media-wrapper">
+          <div class="card-flipper" id="flipper-{{ p.id }}">
+            <!-- Front Face -->
+            <div class="card-face card-face-front" onclick="openQuickView('{{ p.id }}')" title="Click to view full packaging details">
+              <img src="{% if p.front and (p.front.startswith('http') or p.front.startswith('data:') or p.front.startswith('/')) %}{{ p.front }}{% else %}/images/{{ p.front }}{% endif %}" alt="{{ p.name }} Front Packaging">
+            </div>
+            <!-- Back Face -->
+            <div class="card-face card-face-back" onclick="openQuickView('{{ p.id }}')" title="Click to view full back label details">
+              <img src="{% if p.back and (p.back.startswith('http') or p.back.startswith('data:') or p.back.startswith('/')) %}{{ p.back }}{% else %}/images/{{ p.back }}{% endif %}" alt="{{ p.name }} Back Packaging">
+            </div>
+          </div>
+          <!-- 3D Flip Button -->
+          <button type="button" class="btn-flip-toggle" onclick="toggleCardFlip('{{ p.id }}', event)">
+            🔄 Show Back
+          </button>
+        </div>
+
+        <div class="card-content">
+          <h3 class="card-title">{{ p.name }}</h3>
+          <div class="card-hindi">{{ p.hindi }} • <span style="color:var(--accent); font-weight:700;">{{ p.tagline }}</span></div>
+          
+          <div class="card-rating">
+            <span>⭐⭐⭐⭐⭐</span>
+            <span>{{ p.rating }} ({{ p.reviews_count }} reviews)</span>
+          </div>
+
+          <p class="card-desc">{{ p.short_desc or p.description }}</p>
+
+          <div class="size-selector">
+            {% if p.sizes and p.sizes is mapping %}
+              {% for s, s_data in p.sizes.items() %}
+              <button type="button" class="size-pill {% if s == default_size %}active{% endif %}" onclick="selectSize('{{ p.id }}', '{{ s }}', event)">{{ s }}g</button>
+              {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="price-row">
+            <span class="price-main">₹{{ size_data.price if size_data else 50 }}</span>
+            <span class="price-mrp">₹{{ size_data.mrp if size_data else 65 }}</span>
+            <span class="price-save">{{ size_data.save if size_data else 'SAVE' }}</span>
+          </div>
+
+          <div class="card-actions">
+            <button type="button" class="btn-add-cart" onclick="addToCart('{{ p.id }}', '{{ default_size }}')">
+              🛒 Add to Cart
+            </button>
+            <button type="button" class="btn-view-details" onclick="openQuickView('{{ p.id }}')">
+              👁️ View Front & Back Details
+            </button>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
     </div>
   </section>
 

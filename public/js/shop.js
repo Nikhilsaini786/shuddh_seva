@@ -1,10 +1,117 @@
-// Shuddh Seva Foods - Core Storefront Script (with OTP Verification)
-const products = window.SHOP_PRODUCTS || [];
+// Shuddh Seva Foods - Core Storefront Script
+const DEFAULT_FALLBACK_PRODUCTS = [
+  {
+    "id": "turmeric",
+    "name": "Turmeric Powder",
+    "hindi": "हल्दी पाउडर",
+    "tagline": "हमारा देश से, शुद्धता का वादा",
+    "category": "powder",
+    "badge": "High Curcumin • 100% Pure",
+    "front": "turmeric-front.png",
+    "back": "turmeric-back.png",
+    "rating": 4.9,
+    "reviews_count": 148,
+    "description": "Authentic, high-curcumin turmeric powder directly sourced and hygienically processed. Pure golden colour, rich warm aroma and natural immunity-boosting qualities. Completely free from artificial dyes, lead chromate, chalk or starch.",
+    "short_desc": "100% Pure & Natural • No Artificial Colour • Rich Aroma",
+    "ingredients": "100% Pure Turmeric Powder (हल्दी पाउडर) - No Additives",
+    "fssai": "22226083000436",
+    "storage": "Store in a cool, dry place. Keep away from direct sunlight. Close the pouch tightly after use.",
+    "usage": "Adds a rich natural golden colour, warm earthy aroma, and immunity booster to daily curries, dals, golden milk (haldi doodh), soups, and smoothies.",
+    "manufacturer": "SHUDDH SEVA, Jaipur, Rajasthan - 302001",
+    "customer_care": "infosevaspice@gmail.com | +91 6350474290",
+    "barcode": "8 906123 456789",
+    "sizes": {
+      "100": { "price": 50, "mrp": 65, "save": "₹15 OFF" },
+      "200": { "price": 90, "mrp": 120, "save": "₹30 OFF" },
+      "500": { "price": 210, "mrp": 270, "save": "₹60 OFF" }
+    }
+  },
+  {
+    "id": "chilli",
+    "name": "Red Chilli Powder",
+    "hindi": "लाल मिर्च पाउडर",
+    "tagline": "शुद्धता का वादा, सेहत का साथ",
+    "category": "powder",
+    "badge": "Fiery Zest • Natural Red",
+    "front": "chilli-front.png",
+    "back": "chilli-back.png",
+    "rating": 4.9,
+    "reviews_count": 162,
+    "description": "Finest sun-dried red chillies stone-ground to retain natural oils and fiery zest. Gives dishes a vibrant natural red colour and authentic pungency without any added chemicals, synthetic colours, or Sudan dyes.",
+    "short_desc": "100% Pure • No Added Colour • Authentic Pungency",
+    "ingredients": "100% Red Chilli Powder (लाल मिर्च पाउडर) - No Additives",
+    "fssai": "22226083000436",
+    "storage": "Store in a cool, dry place. Keep away from direct sunlight. Close zip pouch tightly after use.",
+    "usage": "Adds a rich colour, heat and authentic flavor to curries, gravies, soups, snacks, tadkas and marinades.",
+    "manufacturer": "SHUDDH SEVA, Jaipur, Rajasthan - 302001",
+    "customer_care": "infosevaspice@gmail.com | +91 6350474290",
+    "barcode": "8 906123 456789",
+    "sizes": {
+      "100": { "price": 50, "mrp": 65, "save": "₹15 OFF" },
+      "200": { "price": 90, "mrp": 120, "save": "₹30 OFF" },
+      "500": { "price": 230, "mrp": 300, "save": "₹70 OFF" }
+    }
+  },
+  {
+    "id": "coriander",
+    "name": "Coriander Powder",
+    "hindi": "धनिया पाउडर",
+    "tagline": "हमारा देश से, शुद्धता का वादा",
+    "category": "powder",
+    "badge": "Fresh Aroma • Slow Ground",
+    "front": "coriander-front.png",
+    "back": "coriander-back.png",
+    "rating": 4.8,
+    "reviews_count": 134,
+    "description": "Selected premium whole coriander seeds gently roasted and slow-ground to preserve natural essential oils and soothing citrus-herbal aroma. Essential for thickening everyday gravies and imparting wholesome traditional flavour.",
+    "short_desc": "100% Pure • Rich Natural Aroma • Authentic Flavor",
+    "ingredients": "100% Coriander Powder (धनिया पाउडर) - No Additives",
+    "fssai": "22226083000436",
+    "storage": "Store in a cool, dry place. Keep away from direct sunlight. Close the pouch tightly after use.",
+    "usage": "Adds a rich aroma, fresh earthy flavour and naturally thickens daily curries, gravies, dals, soups and seasonings.",
+    "manufacturer": "SHUDDH SEVA, Jaipur, Rajasthan - 302001",
+    "customer_care": "infosevaspice@gmail.com | +91 6350474290",
+    "barcode": "8 906123 456789",
+    "sizes": {
+      "100": { "price": 40, "mrp": 55, "save": "₹15 OFF" },
+      "200": { "price": 80, "mrp": 110, "save": "₹30 OFF" },
+      "500": { "price": 180, "mrp": 240, "save": "₹60 OFF" }
+    }
+  },
+  {
+    "id": "combo",
+    "name": "Kitchen Trio Combo Pack (3-in-1)",
+    "hindi": "हल्दी + मिर्च + धनिया कॉम्बो",
+    "tagline": "Goodness of Nature in Every Bite",
+    "category": "combo",
+    "badge": "Bestseller • Best Value",
+    "front": "combo-front.png",
+    "back": "combo-back.png",
+    "rating": 5.0,
+    "reviews_count": 240,
+    "description": "Complete Indian kitchen starter kit! Contains 1 pouch each of pure Turmeric Powder (100g), fiery Red Chilli Powder (100g), and aromatic Coriander Powder (100g). Freshly packed together for complete everyday cooking purity with maximum savings.",
+    "short_desc": "3 Packs Combined (100g x 3) • 100% Pure Spices • Super Saver",
+    "ingredients": "100% Pure Turmeric Powder, Red Chilli Powder & Coriander Powder",
+    "fssai": "22226083000436",
+    "storage": "Store in a cool, dry place. Close zip pouch tightly after every use.",
+    "usage": "The essential spice trio for curries, vegetables, dals, biryanis, and traditional Indian feasts.",
+    "manufacturer": "SHUDDH SEVA, Jaipur, Rajasthan - 302001",
+    "customer_care": "infosevaspice@gmail.com | +91 6350474290",
+    "barcode": "8 906123 456789",
+    "sizes": {
+      "100": { "price": 140, "mrp": 180, "save": "₹40 OFF (3 x 100g = 300g)" }
+    }
+  }
+];
+
+const products = (window.SHOP_PRODUCTS && Array.isArray(window.SHOP_PRODUCTS) && window.SHOP_PRODUCTS.length > 0)
+  ? window.SHOP_PRODUCTS
+  : DEFAULT_FALLBACK_PRODUCTS;
 
 // Selected size state per product
 let selectedSizes = {};
 products.forEach(p => {
-  const sizes = Object.keys(p.sizes);
+  const sizes = (p && p.sizes && typeof p.sizes === 'object') ? Object.keys(p.sizes) : ['100'];
   selectedSizes[p.id] = sizes[0] || '100';
 });
 
@@ -543,11 +650,12 @@ function renderProducts() {
   }
 
   grid.innerHTML = filtered.map(p => {
-    const currentSize = selectedSizes[p.id];
-    const sizeData = p.sizes[currentSize] || p.sizes[Object.keys(p.sizes)[0]];
+    const currentSize = selectedSizes[p.id] || ((p && p.sizes) ? Object.keys(p.sizes)[0] : '100');
+    const safeSizes = (p && p.sizes && typeof p.sizes === 'object') ? p.sizes : { "100": { "price": 50, "mrp": 65, "save": "₹15 OFF" } };
+    const sizeData = safeSizes[currentSize] || safeSizes[Object.keys(safeSizes)[0]] || { "price": 50, "mrp": 65, "save": "" };
     const isFlipped = !!flippedCards[p.id];
 
-    const sizePills = Object.keys(p.sizes).map(s => {
+    const sizePills = Object.keys(safeSizes).map(s => {
       const activeClass = (s === currentSize) ? 'active' : '';
       return `<button type="button" class="size-pill ${activeClass}" onclick="selectSize('${p.id}', '${s}', event)">${s}g</button>`;
     }).join('');
@@ -636,7 +744,8 @@ function addToCart(productId, size, customQty = 1) {
   if (!p) return;
 
   const key = `${productId}-${size}`;
-  const priceData = p.sizes[size];
+  const safeSizes = (p && p.sizes && typeof p.sizes === 'object') ? p.sizes : {};
+  const priceData = safeSizes[size] || safeSizes[Object.keys(safeSizes)[0]] || { price: 50, mrp: 65 };
 
   if (cart[key]) {
     cart[key].qty += customQty;
@@ -694,8 +803,9 @@ function openQuickView(productId) {
   activeModalSide = 'front';
 
   const modal = document.getElementById('quickViewModal');
-  const size = selectedSizes[p.id];
-  const sizeData = p.sizes[size];
+  const safeSizes = (p && p.sizes && typeof p.sizes === 'object') ? p.sizes : { "100": { "price": 50, "mrp": 65, "save": "₹15 OFF" } };
+  const size = selectedSizes[p.id] || Object.keys(safeSizes)[0] || '100';
+  const sizeData = safeSizes[size] || safeSizes[Object.keys(safeSizes)[0]] || { price: 50, mrp: 65, save: 'Best Value' };
 
   document.getElementById('qvTitle').textContent = p.name;
   document.getElementById('qvHindi').textContent = `${p.hindi} • ${p.tagline}`;
@@ -709,7 +819,7 @@ function openQuickView(productId) {
   document.getElementById('qvBackBtn').classList.remove('active');
 
   const qvSizesContainer = document.getElementById('qvSizes');
-  qvSizesContainer.innerHTML = Object.keys(p.sizes).map(s => `
+  qvSizesContainer.innerHTML = Object.keys(safeSizes).map(s => `
     <button type="button" class="size-pill ${s === size ? 'active' : ''}" onclick="selectQvSize('${s}')">${s}g</button>
   `).join('');
 
@@ -738,10 +848,12 @@ function switchQvImage(side) {
 function selectQvSize(size) {
   if (!activeProduct) return;
   selectedSizes[activeProduct.id] = size;
-  const sizeData = activeProduct.sizes[size];
+  const safeSizes = (activeProduct.sizes && typeof activeProduct.sizes === 'object') ? activeProduct.sizes : {};
+  const sizeData = safeSizes[size] || safeSizes[Object.keys(safeSizes)[0]] || { price: 50, mrp: 65, save: '' };
   document.getElementById('qvPrice').textContent = `₹${sizeData.price}`;
   document.getElementById('qvMrp').textContent = `₹${sizeData.mrp}`;
   document.getElementById('qvSave').textContent = sizeData.save || '';
+}
 
   document.querySelectorAll('#qvSizes .size-pill').forEach(btn => {
     btn.classList.toggle('active', btn.textContent.trim() === `${size}g`);
@@ -1144,11 +1256,11 @@ async function submitContactForm(e) {
 }
 
 // Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   renderProducts();
   updateCartBadge();
   checkAuthStatus();
-  if (currentLang && currentLang !== 'en') {
+  if (typeof currentLang !== 'undefined' && currentLang && currentLang !== 'en') {
     applyLanguage(currentLang);
   }
 
@@ -1174,4 +1286,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
