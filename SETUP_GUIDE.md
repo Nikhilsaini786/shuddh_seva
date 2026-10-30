@@ -8,13 +8,13 @@ Complete documentation for the **Shuddh Seva Foods** e-commerce platform featuri
 
 - **Backend Framework**: Python 3.12+ / Flask 3.0+
 - **Database**: SQLite 3 with WAL mode, parameterized queries, and auto-migration (`users`, `orders`, `order_items`, `products`, `otp_verifications`, `admin_users`, `inquiries`, `settings`).
-- **Real OTP Security**:
-  - Cryptographically generated 6-digit numeric OTPs.
-  - Salted SHA-256 hash storage (`salt:target:otp`).
-  - Strict 5-minute expiration.
-  - Rate limiting: 45-second resend cooldown and 5 requests per hour.
-  - Max 5 failed attempts per OTP before automatic invalidation.
-  - Secrets and plain OTP codes are never exposed to frontend JavaScript or network responses.
+- **Authentication Architecture (Unified & OTP-Free)**:
+  - **Account Creation (Sign Up)**: Name, Mobile Number or Email, and Password. Secure salted SHA-256 password hashing.
+  - **Sign In (Unified for Customer & Admin)**: Mobile Number / Email + Password.
+  - **Zero Admin Exposure**: Admin login system is 100% hidden from regular customers (no admin links, banners, or badges).
+  - **Automatic Routing**: If the Store Owner (**Ankit**, `6350474290` or `infosevaspice@gmail.com`) logs in from the standard login page, the system automatically detects admin credentials and redirects to `/admin/dashboard`. Regular users are logged into their customer account.
+  - **100% Vercel Compatibility**: Works immediately without SMS gateway setup or third-party email delays.
+  - **Mandatory Login Before Checkout**: Prevents guest orders; customers must sign up or log in to complete purchase.
 - **Store Owner Admin**:
   - Name: **Ankit**
   - Registered Mobile: **+91 6350474290**
