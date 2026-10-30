@@ -51,10 +51,16 @@ function updateCartBadge() {
 
 // Image URL resolver: handles static files, uploaded base64 data URIs, and external URLs
 function resolveImgUrl(img) {
-  if (!img) return '/static/images/combo_pack.jpg';
-  if (typeof img !== 'string') return '/static/images/combo_pack.jpg';
+  if (!img) return '/images/combo-front.png';
+  if (typeof img !== 'string') return '/images/combo-front.png';
   if (img.startsWith('data:') || img.startsWith('http://') || img.startsWith('https://')) {
     return img;
+  }
+  if (img.startsWith('/images/')) {
+    return img;
+  }
+  if (img.startsWith('/static/images/')) {
+    return img.replace('/static/images/', '/images/');
   }
   if (img.startsWith('/static/')) {
     return img;
@@ -62,7 +68,7 @@ function resolveImgUrl(img) {
   if (img.startsWith('/')) {
     return img;
   }
-  return `/static/images/${img}`;
+  return `/images/${img}`;
 }
 
 // ---------------- USER OTP AUTHENTICATION ---------------- //

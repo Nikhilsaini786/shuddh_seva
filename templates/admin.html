@@ -778,11 +778,17 @@
     let activeTab = 'orders'; // 'orders', 'products', 'inquiries'
 
     function resolveImg(src) {
-      if (!src) return '/static/images/turmeric-front.png';
-      if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
+      if (!src) return '/images/turmeric-front.png';
+      if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://')) {
         return src;
       }
-      return `/static/images/${src}`;
+      if (src.startsWith('/static/images/')) {
+        return src.replace('/static/images/', '/images/');
+      }
+      if (src.startsWith('/')) {
+        return src;
+      }
+      return `/images/${src}`;
     }
 
     async function loadStats() {

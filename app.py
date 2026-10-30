@@ -42,6 +42,40 @@ BASE_DIR = Path(__file__).resolve().parent
 # Ensure database and seed data are initialized
 db.init_db()
 
+# ----------------- STATIC FILE ROUTES (VERCEL & LOCAL COMPATIBILITY) ----------------- #
+
+@app.route("/css/<path:filename>")
+def serve_css(filename):
+    for d in [BASE_DIR / "public" / "css", BASE_DIR / "static" / "css"]:
+        target = d / filename
+        if target.exists() and target.is_file():
+            return send_file(target, mimetype="text/css")
+    return "", 404
+
+@app.route("/js/<path:filename>")
+def serve_js(filename):
+    for d in [BASE_DIR / "public" / "js", BASE_DIR / "static" / "js"]:
+        target = d / filename
+        if target.exists() and target.is_file():
+            return send_file(target, mimetype="application/javascript")
+    return "", 404
+
+@app.route("/images/<path:filename>")
+def serve_images(filename):
+    for d in [BASE_DIR / "public" / "images", BASE_DIR / "static" / "images"]:
+        target = d / filename
+        if target.exists() and target.is_file():
+            return send_file(target)
+    return "", 404
+
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    for d in [BASE_DIR / "public" / "static", BASE_DIR / "static", BASE_DIR / "public"]:
+        target = d / filename
+        if target.exists() and target.is_file():
+            return send_file(target)
+    return "", 404
+
 def mask_target(target: str, target_type: str = "phone") -> str:
     """Mask target for secure display (e.g., +91 ******4290 or in***@gmail.com)."""
     target = str(target).strip()

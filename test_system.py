@@ -457,5 +457,41 @@ class ShuddhSevaFullTestSuite(unittest.TestCase):
 
         print("[PASS] Test 09: Password-based Account Create (Signup) and Unified Sign In verified.")
 
+    def test_10_static_assets_and_public_folder(self):
+        """Verify that CSS, JS, and image assets are served with proper content-types."""
+        client = app.test_client()
+
+        # 1. CSS endpoint
+        css_resp = client.get("/css/style.css")
+        self.assertEqual(css_resp.status_code, 200)
+        self.assertIn("text/css", css_resp.content_type)
+        self.assertIn(b"--primary", css_resp.data)
+
+        # 2. JS endpoint
+        js_resp = client.get("/js/shop.js")
+        self.assertEqual(js_resp.status_code, 200)
+        self.assertIn("javascript", js_resp.content_type)
+        self.assertIn(b"SHOP_PRODUCTS", js_resp.data)
+
+        # 3. Image endpoint
+        img_resp = client.get("/images/combo-front.png")
+        self.assertEqual(img_resp.status_code, 200)
+        self.assertGreater(len(img_resp.data), 1000)
+
+        # 4. Backward-compatible /static/ routes
+        static_css = client.get("/static/css/style.css")
+        self.assertEqual(static_css.status_code, 200)
+        static_img = client.get("/static/images/turmeric-front.png")
+        self.assertEqual(static_img.status_code, 200)
+
+        # 5. Homepage HTML references /css/style.css and /js/shop.js
+        home_resp = client.get("/")
+        self.assertEqual(home_resp.status_code, 200)
+        self.assertIn(b'href="/css/style.css"', home_resp.data)
+        self.assertIn(b'src="/js/shop.js"', home_resp.data)
+        self.assertIn(b'src="/images/combo-front.png"', home_resp.data)
+
+        print("[PASS] Test 10: Static assets, public folder, and MIME types verified successfully.")
+
 if __name__ == "__main__":
     unittest.main()
